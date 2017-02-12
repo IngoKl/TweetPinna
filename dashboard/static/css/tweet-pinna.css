@@ -1,0 +1,42 @@
+body {
+	padding-top: 5rem;
+}
+
+.footer-img {
+	width: 100px;
+	margin-right: 20px;
+}
+
+.header-img {
+	max-height: 100px;
+}
+
+.result-img {
+	max-height: 400px;
+	margin: 10px;
+}
+
+.tp-card {
+	margin-bottom: 15px;
+}
+
+.hashtag {
+	background-color: #363636;
+	border-radius: 2px;
+	color:white;
+	padding: 4px;
+	margin: 2px;
+	display: inline-block;
+}
+
+.hashtag-count {
+	background-color: darkred;
+	padding: 2px;
+	margin: 0px;
+	border-radius: 2px;
+}
+
+.loading-img {
+	width: 16px;
+	height: 16px;
+}

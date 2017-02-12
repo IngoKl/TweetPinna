@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+{% block body %}
+
+<div class="container-fluid">
+
+<h1>Logfile</h1>
+
+  <div class="card tp-card">
+    <div class="card-block">
+      <h4 class="card-title">Instance: {{ instance_name }}</h4>
+      <ul>
+        {% for log_entry in logfile %}
+          <li class="log_entry">{{ log_entry }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

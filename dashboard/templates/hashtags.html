@@ -1,0 +1,24 @@
+{% extends "index.html" %}
+{% block body %}
+
+<div class="container-fluid">
+
+<h1>Hashtags</h1>
+
+  <div class="card tp-card">
+    <div class="card-block">
+      <h4 class="card-title">There are <em id="hashtag-number"><img class="loading-img" src="{{ url_for('static', filename='img/loading-pacman.gif') }}" alt="Loading" /></em> unique hashtags in this collection.</h4>
+
+      <div id="hashtags">
+        Loading ...
+      </div>
+      
+       <p>
+      	<button id="load-more" type="button" style="margin-top: 10px;" class="btn btn-outline-info">Load More</button>
+      </p>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

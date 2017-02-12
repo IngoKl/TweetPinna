@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+{% block body %}
+
+<div class="container-fluid">
+
+<h1>Media Files</h1>
+
+  <div class="card tp-card">
+    <div class="card-block">
+      The storage folder contains <em id="storage-size"><img class="loading-img" src="{{ url_for('static', filename='img/loading-pacman.gif') }}" alt="Loading" /></em> of data.
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

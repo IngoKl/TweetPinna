@@ -1,0 +1,49 @@
+{% extends "index.html" %}
+{% block body %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-10 col-sm-1">
+            <h1>Welcome to the TweetPinna Dashboard</h1>
+            <h4>Instance: {{ instance_name }}</h4>
+        </div>
+        <div class="col-lg-2 col-sm-11">
+            <img class="header-img" src="{{ url_for('static', filename='img/tweetpinna-logo.png') }}" alt="TweetPinna"/>
+        </div>
+    </div>
+</div>
+
+<br>
+
+<div class="container-fluid">
+
+  <div class="card tp-card">
+    <div class="card-block">
+      <h4 class="card-title">Currently Tracking</h4>
+      {% for term in tracking_terms %}
+        <span class="hashtag">{{ term }}</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card tp-card">
+    <div class="card-block">
+      <h4 class="card-title">Documents in the Collection</h4>
+      <p>There are <strong id="dic">{{ docs_in_collection }}</strong> documents in the collection.</p>
+      <p>The last document was added at <strong id="led">{{ last_entry_time }}</strong>.</p>
+      <p>Tweets are being collected at an estimated speed of <span style="font-weight: bold;" id="tph">[Please wait for 60s] <img class="loading-img" src="{{ url_for('static', filename='img/loading-pacman.gif') }}" alt="Loading" /></span> Tweets/h.
+    </div>
+  </div>
+
+  <div class="card tp-card">
+    <div class="card-block">
+      <h4 class="card-title">Tweets</h4>
+      <img class="result-img img-fluid" src="{{ url_for('static', filename='img/results/tweets-by-hour.png') }}" alt="Tweets by Hour"/>
+      <img class="result-img img-fluid" src="{{ url_for('static', filename='img/results/tweets-by-day.png') }}" alt="Tweets by Day"/>
+      <img class="result-img img-fluid" src="{{ url_for('static', filename='img/results/tweets-over-time.png') }}" alt="Tweets over Time"/>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
