@@ -36,14 +36,20 @@ import sys
 import time
 
 try:
-    if check_config(sys.argv[1]):
-        cfg = config.Config(file(sys.argv[1]))
+    if os.path.isfile(sys.argv[1]):
+        if check_config(sys.argv[1]):
+            cfg = config.Config(file(sys.argv[1]))
+            log = Logger(cfg)
+        else:
+            print ('Configuration appears to be faulty')
+            sys.exit(1)
     else:
-        print ('Configuration appears to be faulty')
+        print ('Configuration file %s could not be found' % sys.argv[1])
         sys.exit(1)
-except:
-    print ('No configuration specified')
-    sys.exit(1)
+except IndexError:
+    print ('Using default configuration')
+    cfg = config.Config(file('cfg/TweetPinnaDefault.cfg'))
+    log = Logger(cfg)
 
 plt.style.use('ggplot')
 log = Logger(cfg)

@@ -30,16 +30,26 @@ import sys
 import urlparse
 
 try:
-    if check_config(sys.argv[1]):
-        cfg = config.Config(file(sys.argv[1]))
+    if os.path.isfile(sys.argv[1]):
+        if check_config(sys.argv[1]):
+            cfg = config.Config(file(sys.argv[1]))
+            log = Logger(cfg)
+        else:
+            print ('Configuration appears to be faulty')
+            sys.exit(1)
     else:
-        print ('Configuration appears to be faulty')
+        print ('Configuration file %s could not be found' % sys.argv[1])
         sys.exit(1)
-except:
-    print ('No configuration specified')
-    sys.exit(1)
+except IndexError:
+	print ('Using default configuration')
+    cfg = config.Config(file('cfg/TweetPinnaDefault.cfg'))
+    log = Logger(cfg)
 
-log = Logger(cfg)
+# Create directories
+if not os.path.exists(cfg.media_photo_storage):
+    os.makedirs(cfg.media_photo_storage)
+if not os.path.exists(cfg.media_user_storage):
+    os.makedirs(cfg.media_user_storage)
 
 
 def signal_handler(signum, frame):

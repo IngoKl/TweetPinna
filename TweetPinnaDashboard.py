@@ -30,18 +30,22 @@ import os
 import sys
 
 try:
-    if check_config(sys.argv[1]):
-        cfg = config.Config(file(sys.argv[1]))
+    if os.path.isfile(sys.argv[1]):
+        if check_config(sys.argv[1]):
+            cfg = config.Config(file(sys.argv[1]))
+            log = Logger(cfg)
+        else:
+            print ('Configuration appears to be faulty')
+            sys.exit(1)
     else:
-        print ('Configuration appears to be faulty')
+        print ('Configuration file %s could not be found' % sys.argv[1])
         sys.exit(1)
-except:
-    print ('No configuration specified')
-    sys.exit(1)
+except IndexError:
+    print ('Using default configuration')
+    cfg = config.Config(file('cfg/TweetPinnaDefault.cfg'))
+    log = Logger(cfg)
 
-log = Logger(cfg)
 cache = SimpleCache()
-
 
 # MongoDB
 mongo_client = MongoClient(cfg.mongo_path)
@@ -101,8 +105,11 @@ def get_version():
 
 def get_last_entry_time():
     """Getting the time of the last entry in the collection."""
-    last_entry_time = list(mongo_coll_tweets.find().sort([
-        ("_id", -1)]).limit(1))[0]["_id"].generation_time
+    try:
+        last_entry_time = list(mongo_coll_tweets.find().sort(
+            [("_id", -1)]).limit(1))[0]["_id"].generation_time
+    except:
+        last_entry_time = 0
 
     return last_entry_time
 
