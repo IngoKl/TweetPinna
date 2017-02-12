@@ -73,6 +73,8 @@ class TwitterStreamListener(tweepy.StreamListener):
 
     def on_error(self, status_code):
         """Reacting to Twitter errors."""
+        global end_script
+
         if status_code == 420:
             log.log_add(4, 'Twitter 420 Error')
             log.last_twitter_error_message = 420
@@ -82,8 +84,11 @@ class TwitterStreamListener(tweepy.StreamListener):
             log.last_twitter_error_message = 429
             return False
         elif status_code == 401:
+            # Unauthorized
             log.log_add(4, 'Twitter 401 Error')
             log.last_twitter_error_message = 401
+            print ('Twitter authentication error!')
+            end_script(self)
             return False
         else:
             log.log_add(4, 'Twitter %s' % status_code)
@@ -232,6 +237,8 @@ def end_script(stream):
     log.log_add(1, 'Ending TweetPinna (Instance: %s)' % cfg.instance_name)
     print ('[%s] Ending TweetPinna (Instance: %s)' %
            (time.strftime("%Y-%m-%d %H:%M:%S"), cfg.instance_name))
+
+    os._exit(0)
     sys.exit(1)
 
 
