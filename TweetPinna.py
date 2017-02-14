@@ -7,7 +7,7 @@ MongoDB database based on given search terms.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 0.9.0
+Version: 1.0.0
 Status: Protoype
 
 Example:
@@ -15,16 +15,17 @@ Example:
 """
 
 from email.mime.text import MIMEText
-from pymongo import MongoClient
 from pymongo import errors
+from pymongo import MongoClient
 from time import sleep
-import subprocess
 import config
 import datetime
 import os
 import signal
 import smtplib
+import subprocess
 import sys
+import thread
 import time
 import tweepy
 
@@ -34,15 +35,34 @@ class TwitterStreamListener(tweepy.StreamListener):
 
     def __init__(self):
         """Docstring for Logger."""
+        global end_script
         super(TwitterStreamListener, self).__init__()
         self.counter = 0
+        self.status_buffer = []
+        self.mongo_db_connected = False
+
         self.connect_mongodb()
+        if not self.mongo_db_connected:
+            print "Cannot connect to MongoDB!"
+            end_script(self)
 
     def connect_mongodb(self):
         """Connecting to MongoDB."""
-        self.mongo_client = MongoClient(cfg.mongo_path)
-        self.mongo_db = self.mongo_client[cfg.mongo_db]
-        self.mongo_coll_tweets = self.mongo_db[cfg.mongo_coll]
+        try:
+            self.mongo_client = MongoClient(cfg.mongo_path,
+                                            connectTimeoutMS=500,
+                                            serverSelectionTimeoutMS=500)
+
+            # Check whether the connection is established or not
+            self.mongo_client.server_info()
+
+            self.mongo_db = self.mongo_client[cfg.mongo_db]
+            self.mongo_coll_tweets = self.mongo_db[cfg.mongo_coll]
+
+            self.mongo_db_connected = True
+            log.log_add(2, 'Connection to MongoDB established')
+        except:
+            self.mongo_db_connected = False
 
     def media_download(self, insert_id):
         """Calling the media downloader."""
@@ -57,8 +77,8 @@ class TwitterStreamListener(tweepy.StreamListener):
                 log.log_add(4, 'Could not instantly download media files (%s)'
                             % e)
 
-    def on_status(self, status):
-        """Collecting statuses and adding them to MongoDB."""
+    def add_to_mongodb(self, status):
+        """Addint statuses to MongoDB."""
         try:
             insert_id = self.mongo_coll_tweets.insert(status._json)
             self.media_download(insert_id)
@@ -70,6 +90,27 @@ class TwitterStreamListener(tweepy.StreamListener):
         except Exception as e:
             log.log_add(cfg.log_email_threshold,
                         'Could not write to MongoDB (%s)' % e)
+
+    def clear_buffer(self):
+        """Write the buffer to MongoDB."""
+        if self.mongo_db_connected:
+            while len(self.status_buffer) > 0:
+                self.add_to_mongodb(self.status_buffer.pop())
+
+        if len(self.status_buffer) == 0:
+            log.log_add(3, 'Buffer has been cleared')
+
+    def on_status(self, status):
+        """Collecting statuses and handling them."""
+        if self.mongo_db_connected:
+            self.add_to_mongodb(status)
+
+            if len(self.status_buffer) > 1:
+                thread.start_new(self.clear_buffer, ())
+        else:
+            if cfg.tweet_buffer == 1:
+                self.status_buffer.append(status)
+            thread.start_new(self.connect_mongodb, ())
 
     def on_error(self, status_code):
         """Reacting to Twitter errors."""
@@ -112,7 +153,6 @@ class Logger():
         :param int level: the log-level (usually 1-5) of the message
         """
         self.last_message = message
-
         log_date = time.strftime("%Y-%m-%d")
         log_time = time.strftime("%H:%M:%S")
         '%s/%s-%s.log'

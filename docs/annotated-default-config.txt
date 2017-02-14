@@ -30,3 +30,4 @@ media_download_instantly : 0								# Should images be downloaded instantly?
 dashboard_port : 8080										# The dashboard's port
 dashboard_host : '127.0.0.1'								# The dashboard's address (0.0.0.0 for external access)
 flask_cache_timeout : 10									# Minutes before the Flask cache expires
+tweet_buffer : 1											# Buffer tweets in case the database connection gets lost

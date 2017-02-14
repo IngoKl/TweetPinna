@@ -41,7 +41,7 @@ try:
         print ('Configuration file %s could not be found' % sys.argv[1])
         sys.exit(1)
 except IndexError:
-	print ('Using default configuration')
+    print ('Using default configuration')
     cfg = config.Config(file('cfg/TweetPinnaDefault.cfg'))
     log = Logger(cfg)
 

@@ -14,7 +14,7 @@ python TweetPinnaGraphs.py TweetPinnaDefault.cfg"
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 0.9.0
+Version: 1.0.0
 Status: Protoype
 
 Example:
@@ -53,6 +53,9 @@ except IndexError:
 
 plt.style.use('ggplot')
 log = Logger(cfg)
+
+if not os.path.isdir('dashboard/static/img/results'):
+    os.makedirs('dashboard/static/img/results')
 
 # MongoDB
 mongo_client = MongoClient(cfg.mongo_path)
