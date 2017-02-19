@@ -7,7 +7,7 @@ MongoDB database based on given search terms.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.0
+Version: 1.0.1
 Status: Protoype
 
 Example:
@@ -136,7 +136,7 @@ class TwitterStreamListener(tweepy.StreamListener):
 
 
 class Logger():
-    """This class is handling all and keeps track of events logfiles."""
+    """This class is handling all log events and keeps track of events logfiles."""
 
     def __init__(self, cfg):
         """Initialization."""

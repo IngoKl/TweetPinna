@@ -14,7 +14,7 @@ python TweetPinnaGraphs.py TweetPinnaDefault.cfg"
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.0
+Version: 1.0.1
 Status: Protoype
 
 Example:

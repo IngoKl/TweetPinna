@@ -9,7 +9,7 @@ This script downloads image data found in tweets for further analysis.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 0.9.0
+Version: 1.0.1
 Status: Protoype
 
 Example:
