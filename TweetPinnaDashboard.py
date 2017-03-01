@@ -9,7 +9,7 @@ This script provides a simple dashboard written in Flask.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.1
+Version: 1.0.2
 Status: Protoype
 
 Example:
@@ -22,6 +22,7 @@ from flask import jsonify
 from flask import render_template
 from flask import request
 from pymongo import MongoClient
+from pymongo import errors
 from TweetPinna import check_config
 from TweetPinna import Logger
 from werkzeug.contrib.cache import SimpleCache
@@ -48,7 +49,8 @@ except IndexError:
 cache = SimpleCache()
 
 # MongoDB
-mongo_client = MongoClient(cfg.mongo_path)
+mongo_client = MongoClient(cfg.mongo_path, connectTimeoutMS=500,
+                           serverSelectionTimeoutMS=500)
 mongo_db = mongo_client[cfg.mongo_db]
 mongo_coll_tweets = mongo_db[cfg.mongo_coll]
 
@@ -119,6 +121,18 @@ app = Flask(
     __name__,
     template_folder='dashboard/templates',
     static_folder='dashboard/static')
+
+
+@app.errorhandler(500)
+def internal_error_handler(error):
+    """Handling HTTP 500 errors."""
+    return render_template('error.500.html')
+
+
+@app.errorhandler(404)
+def not_found_error_handler(error):
+    """Handling HTTP 404 errors."""
+    return render_template('error.404.html')
 
 
 @app.route('/')
