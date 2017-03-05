@@ -192,6 +192,6 @@ if __name__ == '__main__':
         if (os.path.getmtime
             ('dashboard/static/img/results/tweets-over-time.png') <
                 (time.time() - cfg.refresh_graphs * 60)):
-            tweets_over_time(0)
+            tweets_over_time(cfg.tweets_overall_limit)
     else:
-        tweets_over_time(0)
+        tweets_over_time(cfg.tweets_overall_limit)
