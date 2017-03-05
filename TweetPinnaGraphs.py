@@ -22,6 +22,7 @@ Example:
 """
 
 import matplotlib
+matplotlib.use('Agg')
 from pymongo import MongoClient
 from TweetPinna import check_config
 from TweetPinna import Logger
@@ -31,8 +32,6 @@ import os
 import pandas as pd
 import sys
 import time
-
-matplotlib.use('Agg')
 
 try:
     if os.path.isfile(sys.argv[1]):

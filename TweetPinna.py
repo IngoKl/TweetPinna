@@ -65,7 +65,7 @@ class TwitterStreamListener(tweepy.StreamListener):
             self.mongo_db_connected = False
 
     @staticmethod
-    def media_download(self, insert_id):
+    def media_download(insert_id):
         """Calling the media downloader."""
         if cfg.media_download_instantly == 1:
             try:
