@@ -1,3 +1,5 @@
+[![quantifiedcode Code Issues](https://www.quantifiedcode.com/api/v1/project/403e7e6703344916a14ea9d7f64cc020/badge.svg)](https://www.quantifiedcode.com/app/project/403e7e6703344916a14ea9d7f64cc020)
+
 # TweetPinna
 ![Logo](https://cloud.githubusercontent.com/assets/16179317/22861826/93aa52be-f122-11e6-891d-5ce9b452ef01.png?raw=true)
 
