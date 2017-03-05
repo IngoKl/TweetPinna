@@ -7,7 +7,7 @@ MongoDB database based on given search terms.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.2
+Version: 1.0.3
 Status: Protoype
 
 Example:
@@ -64,6 +64,7 @@ class TwitterStreamListener(tweepy.StreamListener):
         except:
             self.mongo_db_connected = False
 
+    @staticmethod
     def media_download(self, insert_id):
         """Calling the media downloader."""
         if cfg.media_download_instantly == 1:
@@ -136,7 +137,7 @@ class TwitterStreamListener(tweepy.StreamListener):
 
 
 class Logger():
-    """This class is handling all log events and keeps track of events logfiles."""
+    """Handling all log events and keeping track of event logfiles."""
 
     def __init__(self, cfg):
         """Initialization."""

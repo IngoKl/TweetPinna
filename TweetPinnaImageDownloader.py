@@ -9,7 +9,7 @@ This script downloads image data found in tweets for further analysis.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.2
+Version: 1.0.3
 Status: Protoype
 
 Example:
@@ -116,11 +116,11 @@ if __name__ == '__main__':
 
     # Whole collections vs. individual ObjectId
     try:
-        search_objectId = sys.argv[2]
+        search_object_id = sys.argv[2]
     except:
-        search_objectId = False
+        search_object_id = False
 
-    if search_objectId:
+    if search_object_id:
         try:
             tweets = mongo_coll_tweets.find({'_id': ObjectId(sys.argv[2])})
         except:

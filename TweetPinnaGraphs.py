@@ -14,7 +14,7 @@ python TweetPinnaGraphs.py TweetPinnaDefault.cfg"
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.2
+Version: 1.0.3
 Status: Protoype
 
 Example:
@@ -22,18 +22,17 @@ Example:
 """
 
 import matplotlib
-matplotlib.use('Agg')
-
 from pymongo import MongoClient
 from TweetPinna import check_config
 from TweetPinna import Logger
-import matplotlib
 import config
 import matplotlib.pyplot as plt
 import os
 import pandas as pd
 import sys
 import time
+
+matplotlib.use('Agg')
 
 try:
     if os.path.isfile(sys.argv[1]):
