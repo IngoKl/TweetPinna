@@ -40,3 +40,9 @@ body {
 	width: 16px;
 	height: 16px;
 }
+
+.statistics-list {
+	list-style-type: none;
+	margin:0;
+    padding: 0;
+}

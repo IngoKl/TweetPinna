@@ -44,7 +44,12 @@ If you decide to not download images immediately (`media_download_instantly : 0`
 - [ ] Provide better installation/running routines
 - [ ] Restructuring the project / "make it more pythonic"
 - [ ] Too many hits on tweepy result in an `IncompleteRead exception`
+- [ ] Replace print/own logger with logging
 - [ ] Add calling module/file to the log
+- [ ] Testing
+- [ ] get_hashtags() cosumes to much memory and cpu
+- [X] Optimize caching / move caching away from views
+- [X] Basic statistics (e.g. Token count; Nr. of tweets)
 
 ## Special Behaviour
 If the database (MongoDB) becomes unavailable for any reason, TweetPinna continues to collect tweets. Once the connection is reestablished, the tweet-buffer is dumped into the database. While this behaviour can be memory heavy, it ensures that no (less) tweets are lost. If you want to disable this function set `tweet_buffer : 0`.

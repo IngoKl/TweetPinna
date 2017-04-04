@@ -9,7 +9,7 @@ This script provides a simple dashboard written in Flask.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.3
+Version: 1.0.4
 Status: Protoype
 
 Example:
@@ -22,7 +22,6 @@ from flask import jsonify
 from flask import render_template
 from flask import request
 from pymongo import MongoClient
-from pymongo import errors
 from TweetPinna import check_config
 from TweetPinna import Logger
 from werkzeug.contrib.cache import SimpleCache
@@ -60,25 +59,36 @@ def get_hashtags():
 
     :return list: all hashtags and their frequency
     """
-    pipeline = [
-        {"$unwind": "$entities"},
-        {"$unwind": "$entities.hashtags"},
-        {"$unwind": "$entities.hashtags.text"},
-        {"$group": {"_id": "$entities.hashtags.text", "count":
-                    {"$sum": 1}}},
-        {"$sort": SON([("count", -1), ("_id", -1)])}]
+    hashtags_list = cache.get('hashtags-list')
+    if hashtags_list is None:
+        pipeline = [
+            {"$unwind": "$entities"},
+            {"$unwind": "$entities.hashtags"},
+            {"$unwind": "$entities.hashtags.text"},
+            {"$group": {"_id": "$entities.hashtags.text", "count":
+                        {"$sum": 1}}},
+            {"$sort": SON([("count", -1), ("_id", -1)])}]
 
-    hashtags = list(mongo_coll_tweets.aggregate(pipeline))
-    hashtags_list = []
-    for hashtag in hashtags:
-        hashtags_list.append((hashtag.values()[1], hashtag.values()[0]))
+        hashtags = mongo_coll_tweets.aggregate(pipeline)
+        hashtags_list = []
+        for hashtag in hashtags:
+            hashtags_list.append((hashtag.values()[1], hashtag.values()[0]))
+
+        cache.set('hashtags-list', hashtags_list,
+                  cfg.flask_cache_timeout * 60)
 
     return hashtags_list
 
 
 def get_number_hashtags():
     """Getting the number of unique hashtags in the collection."""
-    return len(get_hashtags())
+    hashtags_number = cache.get('hashtags-number')
+    if hashtags_number is None:
+        hashtags_number = len(get_hashtags())
+        cache.set('hashtags-number', hashtags_number,
+                  cfg.flask_cache_timeout * 60)
+
+    return hashtags_number
 
 
 def get_folder_size(start_path):
@@ -114,6 +124,43 @@ def get_last_entry_time():
         last_entry_time = 0
 
     return last_entry_time
+
+
+def get_token_count():
+    """Generate the token count based on all documents.
+
+    A simple space tokenizer is utilized.
+    The token count is cached for 60 minutes.
+    """
+    tokens = cache.get('tokens-number')
+
+    if tokens is None:
+        tokens = 0
+        tweets = mongo_coll_tweets.find({}, {'text': 1})
+        for tweet in tweets:
+            tokens += len(tweet['text'].split(' '))
+
+    cache.set('tokens-number', tokens, 360)
+
+    return tokens
+
+
+def generate_statistics():
+    """Generate basic statistics and return a dictionary."""
+    statistics = cache.get('statistics')
+    if statistics is None:
+        statistics = {}
+        statistics['nr_hashtags'] = ('Number of Hashtags',
+                                     get_number_hashtags())
+        statistics['nr_tokens'] = ('Number of Tokens', get_token_count())
+        statistics['media_storage_size'] = ('Storage Folder Size (MB)',
+                                            str(get_folder_size(
+                                                cfg.media_storage)))
+
+        cache.set('statistics', statistics,
+                  cfg.flask_cache_timeout * 60)
+
+    return statistics
 
 
 # Flask
@@ -170,17 +217,21 @@ def media():
         instance_ver=get_version())
 
 
+@app.route('/statistics')
+def statistics():
+    """Flask Media Route."""
+    return render_template(
+        'statistics.html', instance_name=cfg.instance_name,
+        instance_ver=get_version())
+
+
 @app.route('/ajax/get/hashtags')
 def ajax_get_hashtags():
     """Flask Ajax Get Hashtag Route."""
     f = request.args.get('f', 0, type=int)
     t = request.args.get('t', 0, type=int)
 
-    hashtags_list = cache.get('hashtags-list')
-    if hashtags_list is None:
-        hashtags_list = get_hashtags()
-        cache.set('hashtags-list', hashtags_list,
-                  cfg.flask_cache_timeout * 60)
+    hashtags_list = get_hashtags()
 
     try:
         if t == 0:
@@ -196,13 +247,13 @@ def ajax_get_hashtags():
 @app.route('/ajax/get/hashtags-number')
 def ajax_get_number_hashtags():
     """Flask Ajax Get Hashtag Number Route."""
-    hashtags_number = cache.get('hashtags-number')
-    if hashtags_number is None:
-        hashtags_number = get_number_hashtags()
-        cache.set('hashtags-number', hashtags_number,
-                  cfg.flask_cache_timeout * 60)
+    return str(get_number_hashtags())
 
-    return str(hashtags_number)
+
+@app.route('/ajax/get/statistics')
+def ajax_get_statistics():
+    """Flask Ajax Get Statistics Route."""
+    return jsonify(generate_statistics())
 
 
 @app.route('/ajax/get/storage-size')

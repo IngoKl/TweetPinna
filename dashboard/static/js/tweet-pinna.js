@@ -80,4 +80,15 @@ $(document).ready(function() {
             $('#storage-size').html(data + ' MB');
         });
     }
+
+
+    //Statistics
+    if ($("#statistics").length) {
+        $.getJSON(root + '/ajax/get/statistics', function(data) {
+            $('#statistics').html('<ul class="statistics-list" id="statistics_list">');
+            jQuery.each(data, function(key, value) {
+                $('#statistics_list').append('<li>' + value[0] + ': <i>' + value[1] + '</i></li>');
+            });
+        });
+    }
 });

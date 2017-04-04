@@ -7,7 +7,7 @@ MongoDB database based on given search terms.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.3
+Version: 1.0.4
 Status: Protoype
 
 Example:
