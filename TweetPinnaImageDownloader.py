@@ -182,10 +182,10 @@ if __name__ == '__main__':
                     photo_url = media["media_url_https"]
                     filetype = get_file_extension(photo_url)
                     download_media_file(
-                        'photo', photo_url, '{}-{}-{}{}'.format(object_id,
-                                                                tweet_id,
-                                                                media_id,
-                                                                filetype),
+                        'photo', photo_url, '{0}-{1}-{2}{3}'.format(object_id,
+                                                                    tweet_id,
+                                                                    media_id,
+                                                                    filetype),
                         filetype)
 
         current_count += 1

@@ -49,7 +49,7 @@ If you decide to not download images immediately (`media_download_instantly : 0`
 - [ ] Add calling module/file to the log
 - [ ] Testing / add Tests
 - [ ] get_hashtags() cosumes to much memory and cpu
-- [ ] Implement OSoMe's Botometer (see [botometer-python](https://github.com/IUNetSci/botometer-python)
+- [ ] Implement OSoMe's Botometer (see [botometer-python](https://github.com/IUNetSci/botometer-python))
 - [ ] Sphinx Documentation
 
 ## Special Behaviour
