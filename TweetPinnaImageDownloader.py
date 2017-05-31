@@ -103,7 +103,7 @@ def download_media_file(type, url, filename, filetype):
                             f.write(chunk)
 
         except Exception as e:
-            log.log_add(3, 'Image download failed (%s)' % e)
+            log.log_add(3, 'Image download failed ({})'.format(e))
 
 
 if __name__ == '__main__':
@@ -138,8 +138,8 @@ if __name__ == '__main__':
     current_count = 0
     for tweet in tweets:
         if current_count % 100 == 0:
-            print ('%s of %s Tweets processed' %
-                   (current_count, number_tweets))
+            print ('{} of {} Tweets processed'.format(current_count,
+                                                      number_tweets))
 
         object_id = tweet["_id"]
         tweet_timestamp_s = int(tweet["timestamp_ms"]) / 1000
@@ -158,20 +158,22 @@ if __name__ == '__main__':
 
             filetype = get_file_extension(user_profile_image_url)
             download_media_file(
-                'user-profile-img', user_profile_image_url, '%s-profile-%s%s' %
-                (user_id, tweet_date, filetype), filetype)
+                'user-profile-img', user_profile_image_url, '{}-profile-{}{}'.
+                format(user_id, tweet_date, filetype), filetype)
+
         if "profile_banner_url" in tweet["user"]:
             user_profile_banner_url = tweet["user"]["profile_banner_url"]
             filetype = get_file_extension(user_profile_banner_url)
             download_media_file(
-                'user-banner-img', user_profile_banner_url, '%s-banner-%s%s' %
-                (user_id, tweet_date, filetype), filetype)
+                'user-banner-img', user_profile_banner_url, '{}-banner-{}{}'.
+                format(user_id, tweet_date, filetype), filetype)
+
         if "profile_background_image_url" in tweet["user"]:
             user_profile_bg_url = tweet["user"]["profile_background_image_url"]
             filetype = get_file_extension(user_profile_bg_url)
             download_media_file(
-                'user-bg-img', user_profile_bg_url, '%s-bg-%s%s' %
-                (user_id, tweet_date, filetype), filetype)
+                'user-bg-img', user_profile_bg_url, '{}-bg-{}{}'.
+                format(user_id, tweet_date, filetype), filetype)
 
         if "media" in tweet["entities"]:
             for media in tweet["entities"]["media"]:
@@ -180,7 +182,10 @@ if __name__ == '__main__':
                     photo_url = media["media_url_https"]
                     filetype = get_file_extension(photo_url)
                     download_media_file(
-                        'photo', photo_url, '%s-%s-%s%s' %
-                        (object_id, tweet_id, media_id, filetype), filetype)
+                        'photo', photo_url, '{}-{}-{}{}'.format(object_id,
+                                                                tweet_id,
+                                                                media_id,
+                                                                filetype),
+                        filetype)
 
         current_count += 1

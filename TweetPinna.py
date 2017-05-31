@@ -159,8 +159,8 @@ class Logger():
         log_file = open('{}/{}-{}.log'.format(self.cfg.log_dir,
                                               self.cfg.instance_name,
                                               log_date), 'a')
-        log_file.write('[{} {}][{}] {}\n'.format(log_date, log_time, level,
-                                                 message))
+        log_file.write('[{0} {1}][{2}] {3}\n'.
+                       format(log_date, log_time, level, message))
         log_file.close()
 
         if (level >= self.cfg.log_email_threshold and
@@ -312,7 +312,8 @@ if __name__ == '__main__':
                 print ('Configuration appears to be faulty')
                 sys.exit(1)
         else:
-            print ('Configuration file %s could not be found' % sys.argv[1])
+            print ('Configuration file {} could not be found'.
+                   format(sys.argv[1]))
             sys.exit(1)
     except IndexError:
         print ('Using default configuration')
