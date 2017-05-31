@@ -9,7 +9,7 @@ This script provides a simple dashboard written in Flask.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.4
+Version: 1.0.5
 Status: Protoype
 
 Example:
@@ -17,6 +17,7 @@ Example:
 """
 
 from bson.son import SON
+from bson.json_util import dumps
 from flask import Flask
 from flask import jsonify
 from flask import render_template
@@ -28,6 +29,7 @@ from werkzeug.contrib.cache import SimpleCache
 import config
 import os
 import sys
+import re
 
 try:
     if os.path.isfile(sys.argv[1]):
@@ -38,7 +40,7 @@ try:
             print ('Configuration appears to be faulty')
             sys.exit(1)
     else:
-        print ('Configuration file %s could not be found' % sys.argv[1])
+        print ('Configuration file {} could not be found'.format(sys.argv[1]))
         sys.exit(1)
 except IndexError:
     print ('Using default configuration')
@@ -52,6 +54,29 @@ mongo_client = MongoClient(cfg.mongo_path, connectTimeoutMS=500,
                            serverSelectionTimeoutMS=500)
 mongo_db = mongo_client[cfg.mongo_db]
 mongo_coll_tweets = mongo_db[cfg.mongo_coll]
+
+
+def html_ann_tweet(tweets):
+    """Adding html to tweets in order to display them on the dashboard."""
+    for tweet in tweets:
+        # Hashtags
+        tweet['text'] = re.sub(r'\B#\w\w+',
+                               '<span class="hashtag">\g<0></span>',
+                               tweet['text'])
+
+        # Usernames
+        tweet['text'] = re.sub(r'(?<=^|(?<=[^a-zA-Z0-9-_\.]))@'
+                               r'([A-Za-z]+[A-Za-z0-9]+)',
+                               '<span class="user">\g<0></span>',
+                               tweet['text'])
+
+        # Links
+        tweet['text'] = re.sub(
+            r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|'
+            r'(?:%[0-9a-fA-F][0-9a-fA-F]))+', '<a href="\g<0>">\g<0></a>',
+            tweet['text'])
+
+    return tweets
 
 
 def get_hashtags():
@@ -126,6 +151,12 @@ def get_last_entry_time():
     return last_entry_time
 
 
+def get_random_tweets(n):
+    """Getting n random tweets from the collection."""
+    sample = list(mongo_coll_tweets.aggregate([{'$sample': {'size': n}}]))
+    return sample
+
+
 def get_token_count():
     """Generate the token count based on all documents.
 
@@ -189,7 +220,8 @@ def index():
                            instance_ver=get_version(),
                            docs_in_collection=mongo_coll_tweets.count(),
                            last_entry_time=get_last_entry_time(),
-                           tracking_terms=cfg.twitter_tracking_terms)
+                           tracking_terms=cfg.twitter_tracking_terms,
+                           random_tweets=html_ann_tweet(get_random_tweets(5)))
 
 
 @app.route('/logfile')
@@ -266,6 +298,12 @@ def ajax_get_storage_size():
 def ajax_get_docs_in_collection():
     """Flask Ajax Get Docs in Collection Route."""
     return jsonify(get_last_entry_time(), mongo_coll_tweets.count())
+
+
+@app.route('/ajax/get/random_tweets/<n>')
+def ajax_get_random_tweets(n):
+    """Flask Ajax Get Random Tweets Route."""
+    return dumps(get_random_tweets(int(n)))
 
 
 if __name__ == "__main__":

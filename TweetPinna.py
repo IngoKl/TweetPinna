@@ -7,7 +7,7 @@ MongoDB database based on given search terms.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.4
+Version: 1.0.5
 Status: Protoype
 
 Example:
@@ -75,8 +75,8 @@ class TwitterStreamListener(tweepy.StreamListener):
                                  shell=False, stdout=fnull,
                                  stderr=subprocess.STDOUT)
             except Exception as e:
-                log.log_add(4, 'Could not instantly download media files (%s)'
-                            % e)
+                log.log_add(4, 'Could not instantly download media files ({})'.
+                            format(e))
 
     def add_to_mongodb(self, status):
         """Addint statuses to MongoDB."""
@@ -90,7 +90,7 @@ class TwitterStreamListener(tweepy.StreamListener):
             self.connect_mongodb()
         except Exception as e:
             log.log_add(cfg.log_email_threshold,
-                        'Could not write to MongoDB (%s)' % e)
+                        'Could not write to MongoDB ({})'.format(e))
 
     def clear_buffer(self):
         """Write the buffer to MongoDB."""
@@ -133,7 +133,7 @@ class TwitterStreamListener(tweepy.StreamListener):
             end_script(self)
             return False
         else:
-            log.log_add(4, 'Twitter %s' % status_code)
+            log.log_add(4, 'Twitter {}'.format(status_code))
 
 
 class Logger():
@@ -156,20 +156,18 @@ class Logger():
         self.last_message = message
         log_date = time.strftime("%Y-%m-%d")
         log_time = time.strftime("%H:%M:%S")
-        '%s/%s-%s.log'
-        log_file = open(
-            '%s/%s-%s.log' %
-            (self.cfg.log_dir, self.cfg.instance_name, log_date), 'a')
-        log_file.write(
-            '[%s %s][%s] %s\n' %
-            (log_date, log_time, level, message))
+        log_file = open('{}/{}-{}.log'.format(self.cfg.log_dir,
+                                              self.cfg.instance_name,
+                                              log_date), 'a')
+        log_file.write('[{} {}][{}] {}\n'.format(log_date, log_time, level,
+                                                 message))
         log_file.close()
 
         if (level >= self.cfg.log_email_threshold and
                 self.cfg.log_email_enabled == 1):
             self.log_send_email(
-                'Level %s Event in %s' %
-                (level, self.cfg.instance_name), message)
+                'Level {} Event in {}'.format(level, self.cfg.instance_name),
+                message)
 
     def log_tail(self, n):
         """Returning the last n messages in the current logfile.
@@ -178,18 +176,20 @@ class Logger():
         :return list: a list of entries
         """
         log_date = time.strftime("%Y-%m-%d")
-        if os.path.isfile('%s/%s-%s.log' % (self.cfg.log_dir,
-                                            self.cfg.instance_name, log_date)):
-            with open('%s/%s-%s.log' % (self.cfg.log_dir,
-                                        self.cfg.instance_name,
-                                        log_date)) as log_file:
+        if os.path.isfile('{}/{}-{}.log'.format(self.cfg.log_dir,
+                                                self.cfg.instance_name,
+                                                log_date)):
+
+            with open('{}/{}-{}.log'.format(self.cfg.log_dir,
+                                            self.cfg.instance_name,
+                                            log_date)) as log_file:
                 lines = log_file.readlines()
                 if n == 0:
                     return lines
                 else:
                     return lines[-n:]
         else:
-            return ['There is no logfile for %s' % log_date]
+            return ['There is no logfile for {}'.format(log_date)]
 
     def log_send_email(self, subject, message):
         """Sending an email to the specified administrator.
@@ -242,8 +242,8 @@ def start_stream(stream):
     try:
         twitter_stream.filter(track=cfg.twitter_tracking_terms, async=True)
     except Exception as e:
-        log.log_add(cfg.log_email_threshold, 'twitter_stream Exception (%s)' %
-                    e.message)
+        log.log_add(cfg.log_email_threshold,
+                    'twitter_stream Exception ({})'.format(e.message))
         end_script(stream)
 
 
@@ -262,10 +262,10 @@ def stop_stream(stream):
 def signal_handler(signum, frame):
     """Handlig interrupt signals."""
     stop_stream(twitter_stream)
-    log.log_add(1, 'Interrupted by signal %s' % signum)
-    log.log_add(1, 'Ending TweetPinna (Instance: %s)' % cfg.instance_name)
-    print ('[%s] Ending TweetPinna (Instance: %s)' %
-           (time.strftime("%Y-%m-%d %H:%M:%S"), cfg.instance_name))
+    log.log_add(1, 'Interrupted by signal {}'.format(signum))
+    log.log_add(1, 'Ending TweetPinna (Inst.: {})'.format(cfg.instance_name))
+    print ('[{}] Ending TweetPinna (Inst.: {})'.
+           format(time.strftime("%Y-%m-%d %H:%M:%S"), cfg.instance_name))
     sys.exit(1)
 
 
@@ -275,9 +275,9 @@ def end_script(stream):
     :param stream object stream: the Tweepy stream object
     """
     stop_stream(stream)
-    log.log_add(1, 'Ending TweetPinna (Instance: %s)' % cfg.instance_name)
-    print ('[%s] Ending TweetPinna (Instance: %s)' %
-           (time.strftime("%Y-%m-%d %H:%M:%S"), cfg.instance_name))
+    log.log_add(1, 'Ending TweetPinna (Inst.: {})'.format(cfg.instance_name))
+    print ('[{}] Ending TweetPinna (Inst.: {})'.
+           format(time.strftime("%Y-%m-%d %H:%M:%S"), cfg.instance_name))
 
     os._exit(0)
     sys.exit(1)
@@ -293,7 +293,8 @@ def check_config(config_file_path):
 
     for cfg_entry in reference_cfg:
         if cfg_entry not in test_cfg:
-            print ('Option %s is missing in the configuration' % cfg_entry)
+            print ('Option {} is missing in the configuration'.
+                   format(cfg_entry))
             return False
     return True
 
@@ -319,9 +320,9 @@ if __name__ == '__main__':
         log = Logger(cfg)
 
     # TweetPinna
-    print ('[%s] Starting TweetPinna (Instance: %s)' %
-           (time.strftime("%Y-%m-%d %H:%M:%S"), cfg.instance_name))
-    log.log_add(1, 'Starting TweetPinna (Instance: %s)' % cfg.instance_name)
+    print ('[{}] Starting TweetPinna (Inst.: {})'.
+           format(time.strftime("%Y-%m-%d %H:%M:%S"), cfg.instance_name))
+    log.log_add(1, 'Starting TweetPinna (Inst.: {})'.format(cfg.instance_name))
 
     # Initialize Tweepy
     twitter_listener = TwitterStreamListener()
@@ -374,7 +375,6 @@ if __name__ == '__main__':
         if (current_count % cfg.report_steps ==
                 0 and current_count > last_tweet_milestone):
             last_tweet_milestone = current_count
-            print ('[%s] %s Tweets have been saved' %
-                   (time.strftime("%Y-%m-%d %H:%M:%S"), current_count))
-            log.log_add(
-                1, '%s Tweets have been saved' % current_count)
+            print ('[{}] {} Tweets have been saved'.
+                   format(time.strftime("%Y-%m-%d %H:%M:%S"), current_count))
+            log.log_add(1, '{} Tweets have been saved'.format(current_count))

@@ -29,6 +29,15 @@ body {
 	display: inline-block;
 }
 
+.user {
+	background-color: #BF3030;
+	border-radius: 5px;
+	color:white;
+	padding: 4px;
+	margin: 2px;
+	display: inline-block;
+}
+
 .hashtag-count {
 	background-color: darkred;
 	padding: 2px;

@@ -9,7 +9,7 @@ This script downloads image data found in tweets for further analysis.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.4
+Version: 1.0.5
 Status: Protoype
 
 Example:
@@ -38,7 +38,7 @@ try:
             print ('Configuration appears to be faulty')
             sys.exit(1)
     else:
-        print ('Configuration file %s could not be found' % sys.argv[1])
+        print ('Configuration file {} could not be found'.format(sys.argv[1]))
         sys.exit(1)
 except IndexError:
     print ('Using default configuration')

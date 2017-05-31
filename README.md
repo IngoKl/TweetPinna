@@ -8,6 +8,7 @@ TweetPinna is a tweet archiver written in Python (2.7x) that saves tweets and me
 * Flask-based web dashboard providing information and some basic statistics about the current archival project
 * Email alerts in case of problems with the archiver
 * Ability to manage multiple archival projects using configuration files
+* Preview of random tweets
 
 ## Installation and Usage
 1. Install and configure MongoDB (currently TweetPinna does not support authentication)
@@ -46,13 +47,13 @@ If you decide to not download images immediately (`media_download_instantly : 0`
 - [ ] Too many hits on tweepy result in an `IncompleteRead exception`
 - [ ] Replace print/own logger with logging
 - [ ] Add calling module/file to the log
-- [ ] Testing
+- [ ] Testing / add Tests
 - [ ] get_hashtags() cosumes to much memory and cpu
-- [X] Optimize caching / move caching away from views
-- [X] Basic statistics (e.g. Token count; Nr. of tweets)
+- [ ] Implement OSoMe's Botometer (see [botometer-python](https://github.com/IUNetSci/botometer-python)
+- [ ] Sphinx Documentation
 
 ## Special Behaviour
 If the database (MongoDB) becomes unavailable for any reason, TweetPinna continues to collect tweets. Once the connection is reestablished, the tweet-buffer is dumped into the database. While this behaviour can be memory heavy, it ensures that no (less) tweets are lost. If you want to disable this function set `tweet_buffer : 0`.
 
 ## Dashboard Screenshot
-![Screenshot](https://cloud.githubusercontent.com/assets/16179317/22861790/cbc597f4-f121-11e6-880f-177f50dc6ba2.png?raw=true)
+![Dashboard Screenshot, Version 1.0.5](https://cloud.githubusercontent.com/assets/16179317/26650083/a174a6a8-4648-11e7-9f71-cca692a45fc7.png)

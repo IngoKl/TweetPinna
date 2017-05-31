@@ -14,7 +14,7 @@ python TweetPinnaGraphs.py TweetPinnaDefault.cfg"
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.4
+Version: 1.0.5
 Status: Protoype
 
 Example:
@@ -42,7 +42,7 @@ try:
             print ('Configuration appears to be faulty')
             sys.exit(1)
     else:
-        print ('Configuration file %s could not be found' % sys.argv[1])
+        print ('Configuration file {} could not be found'.format(sys.argv[1]))
         sys.exit(1)
 except IndexError:
     print ('Using default configuration')
@@ -81,7 +81,7 @@ def tweets_by_hour(n):
         tweets_by_hour.set_xlabel('Date', fontsize=12)
         tweets_by_hour.set_ylabel('Nr. of Tweets', fontsize=12)
         tweets_by_hour.set_title(
-            'Tweets by Hour\n(%s Tweets, avg. %s Tweets/h)\n %s' % (
+            'Tweets by Hour\n({} Tweets, avg. {} Tweets/h)\n {}'.format(
                 n, grouped_df_average, time.strftime("%Y-%m-%d %H:%M:%S")),
             position=(0.5, 1.05))
         tweets_by_hour.get_figure().savefig(
@@ -90,8 +90,8 @@ def tweets_by_hour(n):
 
         log.log_add(1, 'Graph tweets-by-hour.png created')
     except Exception as e:
-        log.log_add(3,
-                    'Graph tweets-by-hour.png could not be created (%s)' % e)
+        log.log_add(3, 'Graph tweets-by-hour.png could \
+                        not be created ({})'.format(e))
         return False
 
 
@@ -118,8 +118,8 @@ def tweets_by_day(n):
         tweets_by_day.set_xlabel('Date', fontsize=12)
         tweets_by_day.set_ylabel('Nr. of Tweets', fontsize=12)
         tweets_by_day.set_title(
-            'Tweets by Day\n(%s Tweets, avg. %s Tweets/day)\n %s' % (
-                n, grouped_df_average, time.strftime("%Y-%m-%d %H:%M:%S")),
+            'Tweets by Day\n({} Tweets, avg. {} Tweets/day)\n {}'.
+            format(n, grouped_df_average, time.strftime("%Y-%m-%d %H:%M:%S")),
             position=(0.5, 1.05))
 
         tweets_by_day.get_figure().savefig(
@@ -129,7 +129,8 @@ def tweets_by_day(n):
         log.log_add(1, 'Graph tweets-by-day.png created')
     except Exception as e:
         log.log_add(3,
-                    'Graph tweets-by-day.png could not be created (%s)' % e)
+                    'Graph tweets-by-day.png could \
+                    not be created ({})'.format(e))
         return False
 
 
@@ -154,8 +155,9 @@ def tweets_over_time(n):
             stacked='False', rot=75)
         tweets_over_time.set_xlabel('Date', fontsize=12)
         tweets_over_time.set_ylabel('Nr. of Tweets', fontsize=12)
-        tweets_over_time.set_title('Tweets over Time\n(avg. %s Tweets/day)' %
-                                   grouped_df_average, position=(0.5, 1.05))
+        tweets_over_time.set_title('Tweets over Time\n(avg. {} Tweets/day)'.
+                                   format(grouped_df_average,
+                                          position=(0.5, 1.05)))
         tweets_over_time.get_figure().savefig(
             'dashboard/static/img/results/tweets-over-time.png',
             bbox_inches='tight')
@@ -163,7 +165,8 @@ def tweets_over_time(n):
         log.log_add(1, 'Graph tweets-over-time.png created')
     except Exception as e:
         log.log_add(3,
-                    'Graph tweets-over-time.png could not be created (%s)' % e)
+                    'Graph tweets-over-time.png could \
+                    not be created ({})'.format(e))
         return False
 
 

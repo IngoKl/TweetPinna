@@ -37,10 +37,28 @@
 
   <div class="card tp-card">
     <div class="card-block">
-      <h4 class="card-title">Tweets</h4>
+      <h4 class="card-title">Tweets over Time</h4>
       <img class="result-img img-fluid" src="{{ url_for('static', filename='img/results/tweets-by-hour.png') }}" alt="Tweets by Hour"/>
       <img class="result-img img-fluid" src="{{ url_for('static', filename='img/results/tweets-by-day.png') }}" alt="Tweets by Day"/>
       <img class="result-img img-fluid" src="{{ url_for('static', filename='img/results/tweets-over-time.png') }}" alt="Tweets over Time"/>
+    </div>
+  </div>
+
+  <div class="card tp-card">
+    <div class="card-block">
+      <h4 class="card-title">Random Tweets from the Collection</h4>
+      <div id="random-tweets">
+      {% for tweet in random_tweets %}
+
+        <div class="card" style="margin-bottom: 10px;">
+          <div class="card-block">
+            <h6 class="card-title">@{{ tweet['user']['screen_name'] }}</h4>
+            <p class="card-text">{{ tweet['text']|safe }}</p>
+          </div>
+        </div>
+
+      {% endfor %}
+      </div>
     </div>
   </div>
 
