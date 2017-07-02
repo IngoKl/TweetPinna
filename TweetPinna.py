@@ -109,7 +109,8 @@ class TwitterStreamListener(tweepy.StreamListener):
             if len(self.status_buffer) > 1:
                 thread.start_new(self.clear_buffer, ())
         else:
-            if cfg.tweet_buffer == 1:
+            if cfg.tweet_buffer == 1 and len(self.status_buffer) \
+                < cfg.tweet_buffer_max:
                 self.status_buffer.append(status)
             thread.start_new(self.connect_mongodb, ())
 
