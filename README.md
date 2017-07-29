@@ -40,20 +40,22 @@ If you decide to not download images immediately (`media_download_instantly : 0`
 ## Todo
 [![quantifiedcode Code Issues](https://www.quantifiedcode.com/api/v1/project/403e7e6703344916a14ea9d7f64cc020/badge.svg)](https://www.quantifiedcode.com/app/project/403e7e6703344916a14ea9d7f64cc020)
 
-- [ ] Video downloader
-- [ ] MongoDB auth compatibility
-- [ ] AWS S3 compatibility for images
-- [ ] Fix xlabels in the dashboard
-- [ ] Provide better installation/running routines
-- [ ] Restructuring the project / "make it more pythonic"
-- [ ] Too many hits on tweepy result in an `IncompleteRead exception`
-- [ ] Replace print/own logger with logging
 - [ ] Add calling module/file to the log
-- [ ] Testing / add Tests
+- [ ] AWS S3 compatibility for images
+- [ ] Fetching a list of friends/relationships and retrieve their tweets (with a given level of depth)
+- [ ] Fix xlabels in the dashboard
 - [ ] get_hashtags() cosumes to much memory and cpu
-- [ ] Implement OSoMe's Botometer (see [botometer-python](https://github.com/IUNetSci/botometer-python))
-- [ ] Sphinx Documentation
 - [ ] i18n
+- [ ] Implement OSoMe's Botometer (see [botometer-python](https://github.com/IUNetSci/botometer-python))
+- [ ] MongoDB auth compatibility
+- [ ] Provide better installation/running routines
+- [ ] Replace print/own logger with logging
+- [ ] Restructuring the project / "make it more pythonic"
+- [ ] Sphinx Documentation
+- [ ] Testing / add Tests
+- [ ] Too many hits on tweepy result in an `IncompleteRead exception`
+- [ ] Unify the individual modules and/or write a wrapper to access them all
+- [ ] Video downloader
 
 ## Special Behaviour
 If the database (MongoDB) becomes unavailable for any reason, TweetPinna continues to collect tweets. Once the connection is reestablished, the tweet-buffer is dumped into the database. While this behaviour can be memory heavy, it ensures that no (less) tweets are lost. If you want to disable this function set `tweet_buffer : 0`.
