@@ -17,7 +17,8 @@ TweetPinna is a tweet archiver written in Python (2.7x) that saves tweets and me
 3. Either edit `cfg/TweetPinnaDefault.cfg` or create your own configuration file (see `docs/annotated-default-config.txt`).
 4. Install all Python dependencies by running `pip install -r requirements.txt`
 5. Install a cronjob that regularly runs `TweetPinnaGraphs.py`
-6. Run both `TweetPinna.py` and `TweetPinnaDashboard.py` (either as a service or in a screen session)
+6. If you want to regularly fetch timelines, install a cronjob that regularly runs `TweetPinnaTimeline.py`
+7. Run both `TweetPinna.py` and `TweetPinnaDashboard.py` (either as a service or in a screen session)
 
 `install.sh` is an alternative to steps 4 and 5 and will use the default configuration. 
 `start.sh`will run both the archiver and the dashboard in a screen session.
