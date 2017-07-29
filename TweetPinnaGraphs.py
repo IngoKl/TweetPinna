@@ -4,6 +4,7 @@
 
 TweetPinna streams Twitter statuses into a
 MongoDB database based on given search terms.
+It is also capable of retrieving a user's timeline.
 
 This script generates graphs for the dashboard.
 It is supposed to run as a cronjob.
@@ -14,7 +15,7 @@ python TweetPinnaGraphs.py TweetPinnaDefault.cfg"
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.5
+Version: 1.0.6
 Status: Protoype
 
 Example:

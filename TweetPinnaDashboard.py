@@ -4,12 +4,13 @@
 
 TweetPinna streams Twitter statuses into a
 MongoDB database based on given search terms.
+It is also capable of retrieving a user's timeline.
 
 This script provides a simple dashboard written in Flask.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.5
+Version: 1.0.6
 Status: Protoype
 
 Example:
@@ -25,6 +26,7 @@ from flask import request
 from pymongo import MongoClient
 from TweetPinna import check_config
 from TweetPinna import Logger
+from TweetPinnaImageDownloader import download_media_file
 from werkzeug.contrib.cache import SimpleCache
 import config
 import os
@@ -194,6 +196,37 @@ def generate_statistics():
     return statistics
 
 
+def get_user(screen_name):
+    """Get information about a tracked user."""
+    # Get all tweets, sorted from newest to oldest
+    user_tweets = list(mongo_coll_tweets.find({'user.screen_name':
+                       screen_name[1:]}).sort([('id', -1)]))
+    user = {}
+
+    try:
+        download_media_file('user-profile-img',
+                            user_tweets[0]['user']['profile_image_url_https'],
+                            'user-{}-current.jpg'.format(screen_name[1:]),
+                            'jpg',
+                            'dashboard/static/img/users')
+        user["profile_picture"] = True
+    except:
+        # The user probably does not have any profile picture
+        user["profile_picture"] = False
+
+    user["screen_name"] = screen_name[1:]
+    user["number_of_tweets"] = len(user_tweets)
+
+    if user["number_of_tweets"] > 0:
+        user["last_tweet"] = user_tweets[0]['text']
+        user["last_tweet_date"] = user_tweets[0]['created_at']
+    else:
+        user["last_tweet"] = 'N/A'
+        user["last_tweet_date"] = 'N/A'
+
+    return(user)
+
+
 # Flask
 app = Flask(
     __name__,
@@ -251,10 +284,24 @@ def media():
 
 @app.route('/statistics')
 def statistics():
-    """Flask Media Route."""
+    """Flask Statistics Route."""
     return render_template(
         'statistics.html', instance_name=cfg.instance_name,
         instance_ver=get_version())
+
+
+@app.route('/timelines')
+def timelines():
+    """Flask Timelines Route."""
+    tracked_users = []
+    for user in cfg.twitter_tracking_users:
+        tracked_users.append(get_user(user))
+
+    return render_template(
+        'timelines.html', instance_name=cfg.instance_name,
+        instance_ver=get_version(),
+        no_tracked_users=len(cfg.twitter_tracking_users),
+        users=tracked_users)
 
 
 @app.route('/ajax/get/hashtags')

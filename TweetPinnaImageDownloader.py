@@ -4,12 +4,13 @@
 
 TweetPinna streams Twitter statuses into a
 MongoDB database based on given search terms.
+It is also capable of retrieving a user's timeline.
 
 This script downloads image data found in tweets for further analysis.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.5
+Version: 1.0.6
 Status: Protoype
 
 Example:
@@ -28,6 +29,7 @@ import requests
 import signal
 import sys
 import urlparse
+import shutil
 
 try:
     if os.path.isfile(sys.argv[1]):
@@ -69,13 +71,15 @@ def get_file_extension(url):
     return filetype
 
 
-def download_media_file(type, url, filename, filetype):
+def download_media_file(type, url, filename, filetype='', copy_to=''):
     """Downloading a media file.
 
     :param str type: the type of the file (photo, user-profile-img,
     user-banner-img, user-bg-img)
     :param str url: the url to download from
     :param str filename: the filename to save to
+    :param str filetype: the filytype (optional)
+    :param str copy_to: a folder to which a copy of the file is sent
     """
     if (len(url) > 0):
         try:
@@ -101,6 +105,10 @@ def download_media_file(type, url, filename, filetype):
                     for chunk in r.iter_content(chunk_size=1024):
                         if chunk:
                             f.write(chunk)
+
+            if copy_to:
+                shutil.copy2(path, copy_to)
+
 
         except Exception as e:
             log.log_add(3, 'Image download failed ({})'.format(e))

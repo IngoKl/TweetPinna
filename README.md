@@ -1,7 +1,7 @@
 # TweetPinna
 ![Logo](https://cloud.githubusercontent.com/assets/16179317/22861826/93aa52be-f122-11e6-891d-5ce9b452ef01.png?raw=true)
 
-TweetPinna is a tweet archiver written in Python (2.7x) that saves tweets and metadata to MongoDB. It is designed for long-running archival projects (e.g. for academic use) and is based on [Tweepy](http://www.tweepy.org/). As of now, TweetPinna is able to archive tweets based on search terms and/or hashtags.
+TweetPinna is a tweet archiver written in Python (2.7x) that saves tweets and metadata to MongoDB. It is designed for long-running archival projects (e.g. for academic use) and is based on [Tweepy](http://www.tweepy.org/). As of now, TweetPinna is able to archive tweets based on search terms and/or hashtags. There is rudimentary support for archiving specific user's timelines.
 
 ## Features
 * Automatic image download (profile pictures, images in tweets)
@@ -9,6 +9,7 @@ TweetPinna is a tweet archiver written in Python (2.7x) that saves tweets and me
 * Email alerts in case of problems with the archiver
 * Ability to manage multiple archival projects using configuration files
 * Preview of random tweets
+* Tracking user's timelines
 
 ## Installation and Usage
 1. Install and configure MongoDB (currently TweetPinna does not support authentication)
@@ -51,6 +52,7 @@ If you decide to not download images immediately (`media_download_instantly : 0`
 - [ ] get_hashtags() cosumes to much memory and cpu
 - [ ] Implement OSoMe's Botometer (see [botometer-python](https://github.com/IUNetSci/botometer-python))
 - [ ] Sphinx Documentation
+- [ ] i18n
 
 ## Special Behaviour
 If the database (MongoDB) becomes unavailable for any reason, TweetPinna continues to collect tweets. Once the connection is reestablished, the tweet-buffer is dumped into the database. While this behaviour can be memory heavy, it ensures that no (less) tweets are lost. If you want to disable this function set `tweet_buffer : 0`.

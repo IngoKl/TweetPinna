@@ -20,9 +20,13 @@
   <div class="card tp-card">
     <div class="card-block">
       <h4 class="card-title">Currently Tracking</h4>
-      {% for term in tracking_terms %}
-        <span class="hashtag">{{ term }}</span>
-      {% endfor %}
+      {% if tracking_terms|length > 0 %}
+	      {% for term in tracking_terms %}
+	        <span class="hashtag">{{ term }}</span>
+	      {% endfor %}
+	  {% else %}
+	    No tracking in progress.
+	  {% endif %}
     </div>
   </div>
 

@@ -4,10 +4,11 @@
 
 TweetPinna streams Twitter statuses into a
 MongoDB database based on given search terms.
+It is also capable of retrieving a user's timeline.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.5
+Version: 1.0.6
 Status: Protoype
 
 Example:

@@ -1,0 +1,42 @@
+{% extends "index.html" %}
+{% block body %}
+
+<div class="container-fluid">
+
+<h1>Timelines</h1>
+
+	<div class="card tp-card">
+		<div id="tracking" class="card-block">
+			Currently <strong>{{ no_tracked_users }}</strong> users are tracked.
+		</div>
+	</div>
+
+	<div class="card tp-card">
+		{% for user in users %}
+		<div id="tracking" class="card-block">
+			<div class="media">
+				<div class="media-left">
+				    <a href="#">
+				    	{% if user.profile_picture %}
+				    	<img style="margin: 5px; width: 32px;" class="media-object" src="/static/img/users/user-{{ user.screen_name }}-current.jpg" alt="{{ user.screen_name }}">
+				    	{% else %}
+				    	<img style="margin: 5px; width: 32px;" class="media-object" src="/static/img/users/user-default.png" alt="{{ user.screen_name }}">
+				    	{% endif %}
+				    </a>
+			  	</div>
+			  	<div class="media-body">
+				  	<h4><strong>@</strong>{{ user.screen_name }}</h4>
+				  	<ul>
+						<li><em>Number of Tweets:</em> {{ user.number_of_tweets }}</li>
+						<li><em>Last Tweet Date:</em> {{ user.last_tweet_date }}</li>
+						<li><em>Last Tweet:</em> {{ user.last_tweet }}</li>
+					</ul>
+			 	</div>
+			 </div>
+		</div>
+		{% endfor %}
+	</div>
+
+</div>
+
+{% endblock %}
