@@ -38,8 +38,6 @@ Keep in mind that using the media/image downloader will generate a lot of traffi
 If you decide to not download images immediately (`media_download_instantly : 0`) you can manually download all images by running `python TweetPinnaImageDownloader.py config.cfg`.
 
 ## Todo
-[![quantifiedcode Code Issues](https://www.quantifiedcode.com/api/v1/project/403e7e6703344916a14ea9d7f64cc020/badge.svg)](https://www.quantifiedcode.com/app/project/403e7e6703344916a14ea9d7f64cc020)
-
 - [ ] Add calling module/file to the log
 - [ ] AWS S3 compatibility for images
 - [ ] Fetching a list of friends/relationships and retrieve their tweets (with a given level of depth)
