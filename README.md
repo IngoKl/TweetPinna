@@ -39,6 +39,7 @@ If you decide to not download images immediately (`media_download_instantly : 0`
 
 ## Todo
 - [ ] Add calling module/file to the log
+- [ ] Add a basic_auth option for the dashboard
 - [ ] AWS S3 compatibility for images
 - [ ] Fetching a list of friends/relationships and retrieve their tweets (with a given level of depth)
 - [ ] Save twitter users
