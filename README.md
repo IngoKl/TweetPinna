@@ -56,6 +56,8 @@ If you decide to not download images immediately (`media_download_instantly : 0`
 - [ ] Too many hits on tweepy result in an `IncompleteRead exception`
 - [ ] Unify the individual modules and/or write a wrapper to access them all
 - [ ] Video downloader
+- [ ] Separate config and tweepy initialization into a helper function
+- [ ] Save twitter users
 
 ## Special Behaviour
 If the database (MongoDB) becomes unavailable for any reason, TweetPinna continues to collect tweets. Once the connection is reestablished, the tweet-buffer is dumped into the database. While this behaviour can be memory heavy, it ensures that no (less) tweets are lost. If you want to disable this function set `tweet_buffer : 0`.
