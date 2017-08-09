@@ -43,9 +43,10 @@ If you decide to not download images immediately (`media_download_instantly : 0`
 - [ ] Add calling module/file to the log
 - [ ] AWS S3 compatibility for images
 - [ ] Fetching a list of friends/relationships and retrieve their tweets (with a given level of depth)
+- [ ] Save twitter users
 - [ ] Fix xlabels in the dashboard
 - [ ] get_hashtags() cosumes to much memory and cpu
-- [ ] i18n
+- [ ] Implement i18n
 - [ ] Implement OSoMe's Botometer (see [botometer-python](https://github.com/IUNetSci/botometer-python))
 - [ ] MongoDB auth compatibility
 - [ ] Provide better installation/running routines
@@ -57,7 +58,7 @@ If you decide to not download images immediately (`media_download_instantly : 0`
 - [ ] Unify the individual modules and/or write a wrapper to access them all
 - [ ] Video downloader
 - [ ] Separate config and tweepy initialization into a helper function
-- [ ] Save twitter users
+- [ ] Implement instant download functionality within the timeline module
 
 ## Special Behaviour
 If the database (MongoDB) becomes unavailable for any reason, TweetPinna continues to collect tweets. Once the connection is reestablished, the tweet-buffer is dumped into the database. While this behaviour can be memory heavy, it ensures that no (less) tweets are lost. If you want to disable this function set `tweet_buffer : 0`.
