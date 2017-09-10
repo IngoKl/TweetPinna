@@ -37,7 +37,10 @@ Keep in mind that using the media/image downloader will generate a lot of traffi
 
 If you decide to not download images immediately (`media_download_instantly : 0`) you can manually download all images by running `python TweetPinnaImageDownloader.py config.cfg`.
 
-## Todo
+### restart.sh
+If persistent logging/tracking is paramount, `restart.sh` can be called from time to time (cronjob) in order to restart both TweetPinna and the MongoDB service in case they are down for some reason. While this is certainly not the 'cleanest' solution, it works well in practice.
+
+## Todo and Bugtracker
 - [ ] Add calling module/file to the log
 - [ ] Add a basic_auth option for the dashboard
 - [ ] AWS S3 compatibility for images
@@ -58,6 +61,7 @@ If you decide to not download images immediately (`media_download_instantly : 0`
 - [ ] Video downloader
 - [ ] Separate config and tweepy initialization into a helper function
 - [ ] Implement instant download functionality within the timeline module
+- [ ] Dashboard should not start without MongoDB connection -> implement global db checks
 
 ## Special Behaviour
 If the database (MongoDB) becomes unavailable for any reason, TweetPinna continues to collect tweets. Once the connection is reestablished, the tweet-buffer is dumped into the database. While this behaviour can be memory heavy, it ensures that no (less) tweets are lost. If you want to disable this function set `tweet_buffer : 0`.
