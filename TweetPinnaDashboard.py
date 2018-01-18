@@ -61,6 +61,10 @@ mongo_coll_tweets = mongo_db[cfg.mongo_coll]
 def html_ann_tweet(tweets):
     """Adding html to tweets in order to display them on the dashboard."""
     for tweet in tweets:
+		
+        if 'text' not in tweet.keys():
+            tweet['text'] = tweet['full_text']
+		
         # Hashtags
         tweet['text'] = re.sub(r'\B#\w\w+',
                                '<span class="hashtag">\g<0></span>',
@@ -218,7 +222,10 @@ def get_user(screen_name):
     user["number_of_tweets"] = len(user_tweets)
 
     if user["number_of_tweets"] > 0:
-        user["last_tweet"] = user_tweets[0]['text']
+        try:
+            user["last_tweet"] = user_tweets[0]['text']
+        except KeyError:
+            user["last_tweet"] = user_tweets[0]['full_text']
         user["last_tweet_date"] = user_tweets[0]['created_at']
     else:
         user["last_tweet"] = 'N/A'
