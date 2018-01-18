@@ -175,7 +175,10 @@ def get_token_count():
         tokens = 0
         tweets = mongo_coll_tweets.find({}, {'text': 1})
         for tweet in tweets:
-            tokens += len(tweet['text'].split(' '))
+            if 'full_text' in tweet.keys():
+                tokens += len(tweet['full_text'].split(' '))
+            else:
+                tokens += len(tweet['text'].split(' '))
 
     cache.set('tokens-number', tokens, 360)
 
