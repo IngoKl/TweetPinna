@@ -35,7 +35,7 @@ import time
 def get_tweets(screen_name, throttle=5):
     """Grabbing all tweets of a given screen_name."""
     tweets = []
-    new_tweets = api.user_timeline(screen_name=screen_name, count=200)
+    new_tweets = api.user_timeline(screen_name=screen_name, count=200, tweet_mode='extended')
     tweets.extend(new_tweets)
     oldest = tweets[-1].id - 1
 
@@ -43,7 +43,7 @@ def get_tweets(screen_name, throttle=5):
         # Throttle the connection
         time.sleep(throttle)
         new_tweets = api.user_timeline(screen_name=screen_name, count=200,
-                                       max_id=oldest)
+                                       max_id=oldest, tweet_mode='extended')
         tweets.extend(new_tweets)
         oldest = tweets[-1].id - 1
 
