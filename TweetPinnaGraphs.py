@@ -15,7 +15,7 @@ python TweetPinnaGraphs.py TweetPinnaDefault.cfg"
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.6
+Version: 1.0.7
 Status: Protoype
 
 Example:
@@ -69,7 +69,7 @@ def tweets_by_hour(n):
     """
     try:
         tweet_timestamps = list(mongo_coll_tweets.find(
-            {}, {'timestamp_ms': 1, '_id': 0}).sort([['_id', -1]]).limit(n))
+            {'timestamp_ms': {'$exists': True}}, {'timestamp_ms': 1, '_id': 0}).sort([['_id', -1]]).limit(n))
         tweet_datetimes = pd.to_datetime(
             map(int, [d['timestamp_ms'] for d in tweet_timestamps]), unit='ms')
 
@@ -103,7 +103,7 @@ def tweets_by_day(n):
     """
     try:
         tweet_timestamps = list(mongo_coll_tweets.find(
-            {}, {'timestamp_ms': 1, '_id': 0}).sort([['_id', -1]]).limit(n))
+            {'timestamp_ms': {'$exists': True}}, {'timestamp_ms': 1, '_id': 0}).sort([['_id', -1]]).limit(n))
         tweet_datetimes = pd.to_datetime(
             map(int, [d['timestamp_ms'] for d in tweet_timestamps]), unit='ms')
 
@@ -142,7 +142,7 @@ def tweets_over_time(n):
     """
     try:
         tweet_timestamps = list(mongo_coll_tweets.find(
-            {}, {'timestamp_ms': 1, '_id': 0}).sort([['_id', -1]]).limit(n))
+            {'timestamp_ms': {'$exists': True}}, {'timestamp_ms': 1, '_id': 0}).sort([['_id', -1]]).limit(n))
         tweet_datetimes = pd.to_datetime(
             map(int, [d['timestamp_ms'] for d in tweet_timestamps]), unit='ms')
 
