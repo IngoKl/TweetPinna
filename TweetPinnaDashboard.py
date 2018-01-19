@@ -8,7 +8,7 @@ It is also capable of retrieving a user's timeline.
 
 This script provides a simple dashboard written in Flask.
 
-Author: Ingo Kleiber <ingo@kleiber.me> (2017)
+Author: Ingo Kleiber <ingo@kleiber.me> (2018)
 License: MIT
 Version: 1.0.7
 Status: Protoype
@@ -259,11 +259,13 @@ def not_found_error_handler(error):
 @app.route('/')
 def index():
     """Flask Welcome Route."""
+    bounding_boxes = [coordinate for box in cfg.twitter_tracking_locations for coordinate in box]
     return render_template('welcome.html', instance_name=cfg.instance_name,
                            instance_ver=get_version(),
                            docs_in_collection=mongo_coll_tweets.count(),
                            last_entry_time=get_last_entry_time(),
                            tracking_terms=cfg.twitter_tracking_terms,
+                           tracking_locations=bounding_boxes,
                            random_tweets=html_ann_tweet(get_random_tweets(5)))
 
 

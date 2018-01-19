@@ -1,7 +1,9 @@
 # TweetPinna
 ![Logo](https://cloud.githubusercontent.com/assets/16179317/22861826/93aa52be-f122-11e6-891d-5ce9b452ef01.png?raw=true)
 
-TweetPinna is a tweet archiver written in Python (2.7x) that saves tweets and metadata to MongoDB. It is designed for long-running archival projects (e.g. for academic use) and is based on [Tweepy](http://www.tweepy.org/). As of now, TweetPinna is able to archive tweets based on search terms and/or hashtags. There is rudimentary support for archiving specific user's timelines.
+TweetPinna is a tweet archiver written in (legacy) Python (2.7x) that saves tweets and metadata to MongoDB. It is designed for long-running archival projects (e.g. for academic use) and is based on [Tweepy](http://www.tweepy.org/). As of now, TweetPinna is able to archive tweets based on search terms and/or hashtags as well as based on location. There is rudimentary support for archiving specific user's timelines.
+
+> I'm in the process of refactoring (and moving away from legacy Python) the whole codebase. The project, as it stands > right now, works fine, but is fairly messy.
 
 ## Features
 * Automatic image download (profile pictures, images in tweets)
@@ -10,6 +12,7 @@ TweetPinna is a tweet archiver written in Python (2.7x) that saves tweets and me
 * Ability to manage multiple archival projects using configuration files
 * Preview of random tweets
 * Tracking user's timelines
+* Tracking basd on locations / boundary boxes
 
 ## Installation and Usage
 1. Install and configure MongoDB (currently TweetPinna does not support authentication)
@@ -18,7 +21,7 @@ TweetPinna is a tweet archiver written in Python (2.7x) that saves tweets and me
 4. Install all Python dependencies by running `pip install -r requirements.txt`
 5. Install a cronjob that regularly runs `TweetPinnaGraphs.py`
 6. If you want to regularly fetch timelines, install a cronjob that regularly runs `TweetPinnaTimeline.py`
-7. Run both `TweetPinna.py` and `TweetPinnaDashboard.py` (either as a service or in a screen session)
+7. Run both `TweetPinna.py` and `TweetPinnaDashboard.py` (either as a service or in a screen session). If you also want to track based on location, you have to run `TweetPinnaTrackLocation.py` in a similar fashion.
 
 `install.sh` is an alternative to steps 4 and 5 and will use the default configuration. 
 `start.sh`will run both the archiver and the dashboard in a screen session.
@@ -62,6 +65,7 @@ If persistent logging/tracking is paramount, `restart.sh` can be called from tim
 - [ ] Separate config and tweepy initialization into a helper function
 - [ ] Implement instant download functionality within the timeline module
 - [ ] Dashboard should not start without MongoDB connection -> implement global db checks
+- [ ] Before adding a tweet to the DB we should check whether it already exists
 
 ## Special Behaviour
 If the database (MongoDB) becomes unavailable for any reason, TweetPinna continues to collect tweets. Once the connection is reestablished, the tweet-buffer is dumped into the database. While this behaviour can be memory heavy, it ensures that no (less) tweets are lost. If you want to disable this function set `tweet_buffer : 0`.
