@@ -71,4 +71,4 @@ If persistent logging/tracking is paramount, `restart.sh` can be called from tim
 If the database (MongoDB) becomes unavailable for any reason, TweetPinna continues to collect tweets. Once the connection is reestablished, the tweet-buffer is dumped into the database. While this behaviour can be memory heavy, it ensures that no (less) tweets are lost. If you want to disable this function set `tweet_buffer : 0`.
 
 ## Dashboard Screenshot
-![Dashboard Screenshot, Version 1.0.5](https://cloud.githubusercontent.com/assets/16179317/26650083/a174a6a8-4648-11e7-9f71-cca692a45fc7.png)
+![Dashboard Screenshot, Version 1.0.5](https://user-images.githubusercontent.com/16179317/36260628-49f5e14e-1262-11e8-84ab-758fa8cd753e.PNG)
