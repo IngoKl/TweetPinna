@@ -10,7 +10,7 @@ This script provides a simple dashboard written in Flask.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2018)
 License: MIT
-Version: 1.0.7
+Version: 1.0.8
 Status: Protoype
 
 Example:
