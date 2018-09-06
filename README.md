@@ -66,7 +66,7 @@ If persistent logging/tracking is paramount, `restart.sh` can be called from tim
 - [ ] Implement instant download functionality within the timeline module
 - [ ] Dashboard should not start without MongoDB connection -> implement global db checks
 - [ ] Before adding a tweet to the DB we should check whether it already exists
-- [ ] The "Tweets over Time" graph doesn't show the actual number of tweets
+- [x] The "Tweets over Time" graph doesn't show the actual number of tweets
 
 ## Special Behaviour
 If the database (MongoDB) becomes unavailable for any reason, TweetPinna continues to collect tweets. Once the connection is reestablished, the tweet-buffer is dumped into the database. While this behaviour can be memory heavy, it ensures that no (less) tweets are lost. If you want to disable this function set `tweet_buffer : 0`.
