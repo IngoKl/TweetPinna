@@ -15,7 +15,7 @@ python TweetPinnaGraphs.py TweetPinnaDefault.cfg"
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.7
+Version: 1.0.8
 Status: Protoype
 
 Example:
@@ -156,7 +156,7 @@ def tweets_over_time(n):
             stacked='False', rot=75)
         tweets_over_time.set_xlabel('Date', fontsize=12)
         tweets_over_time.set_ylabel('Nr. of Additional Tweets', fontsize=12)
-        tweets_over_time.set_title('Tweets over Time\n({} Tweets, avg. {} Tweets/day\n {})'.
+        tweets_over_time.set_title('Tweets over Time\n({} Tweets, avg. {} Tweets/day)\n {})'.
                                    format(n, grouped_df_average, time.strftime("%Y-%m-%d %H:%M:%S")),
                                           position=(0.5, 1.05))
         tweets_over_time.get_figure().savefig(
