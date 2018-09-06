@@ -156,9 +156,9 @@ def tweets_over_time(n):
             stacked='False', rot=75)
         tweets_over_time.set_xlabel('Date', fontsize=12)
         tweets_over_time.set_ylabel('Nr. of Additional Tweets', fontsize=12)
-        tweets_over_time.set_title('Tweets over Time\n({} Tweets, avg. {} Tweets/day)'.
-                                   format(n, grouped_df_average,
-                                          position=(0.5, 1.05)))
+        tweets_over_time.set_title('Tweets over Time\n({} Tweets, avg. {} Tweets/day\n {})'.
+                                   format(n, grouped_df_average, time.strftime("%Y-%m-%d %H:%M:%S")),
+                                          position=(0.5, 1.05))
         tweets_over_time.get_figure().savefig(
             'dashboard/static/img/results/tweets-over-time.png',
             bbox_inches='tight')
