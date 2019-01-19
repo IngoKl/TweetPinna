@@ -24,3 +24,12 @@ if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 0 ))
   echo "$service has stopped; restarting!"
   sudo service mongodb start
 fi
+
+# Alternative method based on checking the service
+#if sudo service mongodb status | grep -q 'enabled'
+# then
+#  echo "$service is running; no restart required!"
+# else
+#  echo "$service has stopped; restarting!"
+#  sudo service mongodb start
+#fi
