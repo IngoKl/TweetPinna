@@ -1,9 +1,11 @@
 # TweetPinna
 ![Logo](https://cloud.githubusercontent.com/assets/16179317/22861826/93aa52be-f122-11e6-891d-5ce9b452ef01.png?raw=true)
 
-TweetPinna is a tweet archiver written in (legacy) Python (2.7x) that saves tweets and metadata to MongoDB. It is designed for long-running archival projects (e.g. for academic use) and is based on [Tweepy](http://www.tweepy.org/). As of now, TweetPinna is able to archive tweets based on search terms and/or hashtags as well as based on location. There is rudimentary support for archiving specific user's timelines.
+TweetPinna is a tweet archiver that saves tweets and metadata to MongoDB. It is designed for long-running archival projects (e.g. for academic use) and is based on [Tweepy](http://www.tweepy.org/). 
+As of now, TweetPinna is able to archive tweets based on search terms and/or hashtags as well as based on location. There is rudimentary support for archiving specific user's timelines.
 
-> I'm in the process of refactoring (and moving away from legacy Python) the whole codebase. The project, as it stands right now, works fine, but is fairly messy.
+> TweetPinna, as of 1.0.9, supports Python 3. However, the original TweetPinna was in written in (legacy) Python (2.7x). I'm in the process of refactoring (and actually moving away from legacy Python) the whole codebase. 
+> The project, as it stands right now, works fine, but is fairly messy. There will be (very infrequent) marginal updates to this legacy version.
 
 ## Features
 * Automatic image download (profile pictures, images in tweets)
@@ -17,7 +19,7 @@ TweetPinna is a tweet archiver written in (legacy) Python (2.7x) that saves twee
 ## Installation and Usage
 1. Install and configure MongoDB (currently TweetPinna does not support authentication)
 2. Clone the repository into a dictionary
-3. Either edit `cfg/TweetPinnaDefault.cfg` or create your own configuration file (see `docs/annotated-default-config.txt`).
+3. Either edit `cfg/TweetPinnaDefault.cfg` or create your own configuration file (see `docs/annotated-default-config.txt`). Remember to change the password for the dashboard!
 4. Install all Python dependencies by running `pip install -r requirements.txt`
 5. Install a cronjob that regularly runs `TweetPinnaGraphs.py`
 6. If you want to regularly fetch timelines, install a cronjob that regularly runs `TweetPinnaTimeline.py`
@@ -45,10 +47,8 @@ If persistent logging/tracking is paramount, `restart.sh` can be called from tim
 
 ## Todo and Bugtracker
 - [ ] Add calling module/file to the log
-- [ ] Add a basic_auth option for the dashboard
 - [ ] AWS S3 compatibility for images
 - [ ] Fetching a list of friends/relationships and retrieve their tweets (with a given level of depth)
-- [ ] Save twitter users
 - [ ] Fix xlabels in the dashboard
 - [ ] get_hashtags() cosumes to much memory and cpu
 - [ ] Implement i18n
@@ -62,14 +62,17 @@ If persistent logging/tracking is paramount, `restart.sh` can be called from tim
 - [ ] Too many hits on tweepy result in an `IncompleteRead exception`
 - [ ] Unify the individual modules and/or write a wrapper to access them all
 - [ ] Video downloader
-- [ ] Separate config and tweepy initialization into a helper function
+- [ ] Separate config and tweepy initialization into a helper function --> modularization
 - [ ] Implement instant download functionality within the timeline module
 - [ ] Dashboard should not start without MongoDB connection -> implement global db checks
 - [ ] Before adding a tweet to the DB we should check whether it already exists
-- [x] The "Tweets over Time" graph doesn't show the actual number of tweets
+- [ ] The "Tweets over Time" graph(s) doesn't show the actual number of tweets due to scaling effects
+- [ ] Add functionality to track replies to tweets
 
 ## Special Behaviour
 If the database (MongoDB) becomes unavailable for any reason, TweetPinna continues to collect tweets. Once the connection is reestablished, the tweet-buffer is dumped into the database. While this behaviour can be memory heavy, it ensures that no (less) tweets are lost. If you want to disable this function set `tweet_buffer : 0`.
+
+If there is no dashboard username set, the dashboard will be unprotected.
 
 ## Dashboard Screenshot
 ![Dashboard Screenshot, Version 1.0.5](https://user-images.githubusercontent.com/16179317/36260628-49f5e14e-1262-11e8-84ab-758fa8cd753e.PNG)

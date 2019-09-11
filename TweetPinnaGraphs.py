@@ -15,7 +15,7 @@ python TweetPinnaGraphs.py TweetPinnaDefault.cfg"
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.8
+Version: 1.0.9
 Status: Protoype
 
 Example:
@@ -33,11 +33,12 @@ import os
 import pandas as pd
 import sys
 import time
+import numpy as np
 
 try:
     if os.path.isfile(sys.argv[1]):
         if check_config(sys.argv[1]):
-            cfg = config.Config(file(sys.argv[1]))
+            cfg = config.Config(open(sys.argv[1], 'r'))
             log = Logger(cfg)
         else:
             print ('Configuration appears to be faulty')
@@ -47,7 +48,7 @@ try:
         sys.exit(1)
 except IndexError:
     print ('Using default configuration')
-    cfg = config.Config(file('cfg/TweetPinnaDefault.cfg'))
+    cfg = config.Config(open('cfg/TweetPinnaDefault.cfg', 'r'))
     log = Logger(cfg)
 
 plt.style.use('ggplot')
@@ -71,7 +72,7 @@ def tweets_by_hour(n):
         tweet_timestamps = list(mongo_coll_tweets.find(
             {'timestamp_ms': {'$exists': True}}, {'timestamp_ms': 1, '_id': 0}).sort([['_id', -1]]).limit(n))
         tweet_datetimes = pd.to_datetime(
-            map(int, [d['timestamp_ms'] for d in tweet_timestamps]), unit='ms')
+            np.array(list(map(int, [d['timestamp_ms'] for d in tweet_timestamps]))), unit='ms')
 
         df = pd.DataFrame(tweet_datetimes, columns=['date'])
         df.set_index('date', drop=False, inplace=True)
@@ -105,7 +106,7 @@ def tweets_by_day(n):
         tweet_timestamps = list(mongo_coll_tweets.find(
             {'timestamp_ms': {'$exists': True}}, {'timestamp_ms': 1, '_id': 0}).sort([['_id', -1]]).limit(n))
         tweet_datetimes = pd.to_datetime(
-            map(int, [d['timestamp_ms'] for d in tweet_timestamps]), unit='ms')
+            np.array(list(map(int, [d['timestamp_ms'] for d in tweet_timestamps]))), unit='ms')
 
         df = pd.DataFrame(tweet_datetimes, columns=['date'])
         df.set_index('date', drop=False, inplace=True)
@@ -144,7 +145,7 @@ def tweets_over_time(n):
         tweet_timestamps = list(mongo_coll_tweets.find(
             {'timestamp_ms': {'$exists': True}}, {'timestamp_ms': 1, '_id': 0}).sort([['_id', -1]]).limit(n))
         tweet_datetimes = pd.to_datetime(
-            map(int, [d['timestamp_ms'] for d in tweet_timestamps]), unit='ms')
+            np.array(list(map(int, [d['timestamp_ms'] for d in tweet_timestamps]))), unit='ms')
 
         df = pd.DataFrame(tweet_datetimes, columns=['date'])
         df.set_index('date', drop=False, inplace=True)

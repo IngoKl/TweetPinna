@@ -10,7 +10,7 @@ This script downloads image data found in tweets for further analysis.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.8
+Version: 1.0.9
 Status: Protoype
 
 Example:
@@ -28,23 +28,24 @@ import os.path
 import requests
 import signal
 import sys
-import urlparse
+from urllib.parse import urlparse
+from urllib.parse import urlsplit
 import shutil
 
 try:
     if os.path.isfile(sys.argv[1]):
         if check_config(sys.argv[1]):
-            cfg = config.Config(file(sys.argv[1]))
+            cfg = config.Config(open(sys.argv[1], 'r'))
             log = Logger(cfg)
         else:
-            print ('Configuration appears to be faulty')
+            print('Configuration appears to be faulty')
             sys.exit(1)
     else:
-        print ('Configuration file {} could not be found'.format(sys.argv[1]))
+        print('Configuration file {} could not be found'.format(sys.argv[1]))
         sys.exit(1)
 except IndexError:
-    print ('Using default configuration')
-    cfg = config.Config(file('cfg/TweetPinnaDefault.cfg'))
+    print('Using default configuration')
+    cfg = config.Config(open('cfg/TweetPinnaDefault.cfg', 'r'))
     log = Logger(cfg)
 
 # Create directories
@@ -66,7 +67,7 @@ def get_file_extension(url):
     """
     filetype = os.path.splitext(
         os.path.basename(
-            urlparse.urlsplit(url).path))[1]
+            urlsplit(url).path))[1]
 
     return filetype
 
@@ -132,14 +133,15 @@ if __name__ == '__main__':
         try:
             tweets = mongo_coll_tweets.find({'_id': ObjectId(sys.argv[2])})
         except:
-            print ('ObjectId seems to be invalid')
+            print('ObjectId seems to be invalid')
             sys.exit(1)
 
         if tweets.count() < 1:
-            print ('ObjectId not found')
+            print('ObjectId not found')
             sys.exit(1)
     else:
         tweets = mongo_coll_tweets.find()
+
 
     # Download
     number_tweets = tweets.count()
@@ -156,6 +158,8 @@ if __name__ == '__main__':
 
         tweet_id = int(tweet["id"])
         user_id = tweet["user"]["id"]
+
+        print(tweet_id)
 
         if "profile_image_url" in tweet["user"]:
             user_profile_image_url = tweet["user"]["profile_image_url"]

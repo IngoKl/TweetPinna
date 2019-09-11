@@ -8,7 +8,7 @@ It is also capable of retrieving a user's timeline.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.8
+Version: 1.0.9
 Status: Protoype
 
 Example:
@@ -26,7 +26,7 @@ import signal
 import smtplib
 import subprocess
 import sys
-import thread
+import _thread
 import time
 import tweepy
 
@@ -82,7 +82,8 @@ class TwitterStreamListener(tweepy.StreamListener):
     def add_to_mongodb(self, status):
         """Addint statuses to MongoDB."""
         try:
-            insert_id = self.mongo_coll_tweets.insert(status._json)
+            insert = self.mongo_coll_tweets.insert_one(status._json)
+            insert_id = insert.inserted_id
             self.media_download(insert_id)
             self.counter += 1
         except errors.ServerSelectionTimeoutError:
@@ -108,12 +109,11 @@ class TwitterStreamListener(tweepy.StreamListener):
             self.add_to_mongodb(status)
 
             if len(self.status_buffer) > 1:
-                thread.start_new(self.clear_buffer, ())
+                _thread.start_new(self.clear_buffer, ())
         else:
-            if cfg.tweet_buffer == 1 and len(self.status_buffer) \
-                < cfg.tweet_buffer_max:
+            if cfg.tweet_buffer == 1 and len(self.status_buffer) < cfg.tweet_buffer_max:
                 self.status_buffer.append(status)
-            thread.start_new(self.connect_mongodb, ())
+            _thread.start_new(self.connect_mongodb, ())
 
     def on_error(self, status_code):
         """Reacting to Twitter errors."""
@@ -242,7 +242,7 @@ def start_stream(stream):
     log.log_add(1, 'Stream started by start_stream')
 
     try:
-        twitter_stream.filter(track=cfg.twitter_tracking_terms, async=True)
+        twitter_stream.filter(track=cfg.twitter_tracking_terms, is_async=True)
     except Exception as e:
         log.log_add(cfg.log_email_threshold,
                     'twitter_stream Exception ({})'.format(e.message))
@@ -290,8 +290,8 @@ def check_config(config_file_path):
 
     :param str config_file_path: path to the file that should be tested
     """
-    reference_cfg = config.Config(file('cfg/TweetPinnaDefault.cfg'))
-    test_cfg = config.Config(file(config_file_path))
+    reference_cfg = config.Config(open('cfg/TweetPinnaDefault.cfg', 'r'))
+    test_cfg = config.Config(open(config_file_path, 'r'))
 
     for cfg_entry in reference_cfg:
         if cfg_entry not in test_cfg:
@@ -308,22 +308,22 @@ if __name__ == '__main__':
     try:
         if os.path.isfile(sys.argv[1]):
             if check_config(sys.argv[1]):
-                cfg = config.Config(file(sys.argv[1]))
+                cfg = config.Config(open(sys.argv[1], 'r'))
                 log = Logger(cfg)
             else:
-                print ('Configuration appears to be faulty')
+                print('Configuration appears to be faulty')
                 sys.exit(1)
         else:
-            print ('Configuration file {} could not be found'.
+            print('Configuration file {} could not be found'.
                    format(sys.argv[1]))
             sys.exit(1)
     except IndexError:
-        print ('Using default configuration')
-        cfg = config.Config(file('cfg/TweetPinnaDefault.cfg'))
+        print('Using default configuration')
+        cfg = config.Config(open('cfg/TweetPinnaDefault.cfg', 'r'))
         log = Logger(cfg)
 
     # TweetPinna
-    print ('[{}] Starting TweetPinna (Inst.: {})'.
+    print('[{}] Starting TweetPinna (Inst.: {})'.
            format(time.strftime("%Y-%m-%d %H:%M:%S"), cfg.instance_name))
     log.log_add(1, 'Starting TweetPinna (Inst.: {})'.format(cfg.instance_name))
 

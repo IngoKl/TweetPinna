@@ -10,7 +10,7 @@ This script provides a simple dashboard written in Flask.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2018)
 License: MIT
-Version: 1.0.8
+Version: 1.0.9
 Status: Protoype
 
 Example:
@@ -23,6 +23,7 @@ from flask import Flask
 from flask import jsonify
 from flask import render_template
 from flask import request
+from flask_basicauth import BasicAuth
 from pymongo import MongoClient
 from TweetPinna import check_config
 from TweetPinna import Logger
@@ -36,7 +37,7 @@ import re
 try:
     if os.path.isfile(sys.argv[1]):
         if check_config(sys.argv[1]):
-            cfg = config.Config(file(sys.argv[1]))
+            cfg = config.Config(open(sys.argv[1], 'r'))
             log = Logger(cfg)
         else:
             print ('Configuration appears to be faulty')
@@ -46,7 +47,7 @@ try:
         sys.exit(1)
 except IndexError:
     print ('Using default configuration')
-    cfg = config.Config(file('cfg/TweetPinnaDefault.cfg'))
+    cfg = config.Config(open('cfg/TweetPinnaDefault.cfg', 'r'))
     log = Logger(cfg)
 
 cache = SimpleCache()
@@ -61,10 +62,10 @@ mongo_coll_tweets = mongo_db[cfg.mongo_coll]
 def html_ann_tweet(tweets):
     """Adding html to tweets in order to display them on the dashboard."""
     for tweet in tweets:
-		
+
         if 'text' not in tweet.keys():
             tweet['text'] = tweet['full_text']
-		
+
         # Hashtags
         tweet['text'] = re.sub(r'\B#\w\w+',
                                '<span class="hashtag">\g<0></span>',
@@ -243,6 +244,12 @@ app = Flask(
     template_folder='dashboard/templates',
     static_folder='dashboard/static')
 
+basic_auth = BasicAuth(app)
+# Activate Basic Auth
+if cfg.dashboard_username:
+    app.config['BASIC_AUTH_FORCE'] = True
+    app.config['BASIC_AUTH_USERNAME'] = cfg.dashboard_username
+    app.config['BASIC_AUTH_PASSWORD'] = cfg.dashboard_password
 
 @app.errorhandler(500)
 def internal_error_handler(error):

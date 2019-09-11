@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# PyCharm
+.idea/*
+
 # Distribution / packaging
 .Python
 env/
@@ -87,3 +90,13 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Test CFG
+cfg/Test.cfg
+
+# Storage
+/storage/media/photos/*
+/storage/media/users/*
+
+# Dashboard
+/dashboard/static/img/results/*

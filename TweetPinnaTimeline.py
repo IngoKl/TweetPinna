@@ -15,7 +15,7 @@ python TweetPinnaTimeline.py TweetPinnaDefault.cfg"
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.8
+Version: 1.0.9
 Status: Protoype
 
 Example:
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     try:
         if os.path.isfile(sys.argv[1]):
             if check_config(sys.argv[1]):
-                cfg = config.Config(file(sys.argv[1]))
+                cfg = config.Config(open(sys.argv[1], 'r'))
                 log = Logger(cfg)
             else:
                 print ('Configuration appears to be faulty')
@@ -66,7 +66,7 @@ if __name__ == '__main__':
             sys.exit(1)
     except IndexError:
         print ('Using default configuration')
-        cfg = config.Config(file('cfg/TweetPinnaDefault.cfg'))
+        cfg = config.Config(open('cfg/TweetPinnaDefault.cfg', 'r'))
         log = Logger(cfg)
 
     # TweetPinna
@@ -103,7 +103,8 @@ if __name__ == '__main__':
         try:
             tweets = get_tweets(screen_name)
             for tweet in tweets:
-                if mongo_coll_tweets.find({'id': tweet._json["id"]}).count() == 0:
-                    insert_id = mongo_coll_tweets.insert(tweet._json)
+                if mongo_coll_tweets.find({'id': tweet._json["id"]}).count_documents() == 0:
+                    insert = mongo_coll_tweets.insert_one(tweet._json)
+                    inser_id = insert.inserted_id
         except Exception as e:
                 log.log_add(2, 'Timeline: {} {}'.format(e, cfg.instance_name))
