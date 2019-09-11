@@ -9,6 +9,8 @@ email_spam_wait : 5													# Minutes between two emails for spam prevention
 email_starttls : 1													# Use startttls?
 email_user : ''														# Email username
 flask_cache_timeout : 10											# Minutes before the Flask cache expires
+dashboard_username : 'admin'                                        # The username for the dashboard. If empty, the dashboard will be unsecured.
+dashboard_password : 'tweetpinna'                                   # The plaintext password for the dashboard.
 instance_name : 'TweetPinnaDefault'									# The name of the archiver instance
 log_dir : 'log'														# Log directory
 log_email_enabled : 1												# Should emails be send?

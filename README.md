@@ -25,7 +25,7 @@ As of now, TweetPinna is able to archive tweets based on search terms and/or has
 6. If you want to regularly fetch timelines, install a cronjob that regularly runs `TweetPinnaTimeline.py`
 7. Run both `TweetPinna.py` and `TweetPinnaDashboard.py` (either as a service or in a screen session). If you also want to track based on location, you have to run `TweetPinnaTrackLocation.py` in a similar fashion.
 
-`install.sh` is an alternative to steps 4 and 5 and will use the default configuration. 
+`install.sh` is an alternative to steps 4 and 5 and will use the default configuration. The installer will assume `python` and `pip` to be your preferred commands.
 `start.sh`will run both the archiver and the dashboard in a screen session.
 
 All TweetPinna scripts require a valid configuration to run. The configuration is always passed as the first argument, e.g. `python TweetPinna.py cfg/TweetPinnaDefault.cfg`.
