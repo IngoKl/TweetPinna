@@ -76,7 +76,7 @@ def tweets_by_hour(n):
 
         df = pd.DataFrame(tweet_datetimes, columns=['date'])
         df.set_index('date', drop=False, inplace=True)
-        grouped_df = df.groupby(pd.TimeGrouper(freq='1h')).count()
+        grouped_df = df.groupby(pd.Grouper(freq='1h')).count()
         grouped_df_average = grouped_df["date"].sum() / len(grouped_df)
         tweets_by_hour = grouped_df.plot(
             kind='bar', legend=False, color='#262626', rot=75)
@@ -110,7 +110,7 @@ def tweets_by_day(n):
 
         df = pd.DataFrame(tweet_datetimes, columns=['date'])
         df.set_index('date', drop=False, inplace=True)
-        grouped_df = df.groupby(pd.TimeGrouper(freq='1d')).count()
+        grouped_df = df.groupby(pd.Grouper(freq='1d')).count()
         grouped_df_average = grouped_df["date"].sum() / len(grouped_df)
         grouped_df['day'] = grouped_df.date.keys().strftime('%Y-%m-%d')
 
@@ -149,7 +149,7 @@ def tweets_over_time(n):
 
         df = pd.DataFrame(tweet_datetimes, columns=['date'])
         df.set_index('date', drop=False, inplace=True)
-        grouped_df = df.groupby(pd.TimeGrouper(freq='1d')).count()
+        grouped_df = df.groupby(pd.Grouper(freq='1d')).count()
         grouped_df_average = grouped_df["date"].sum() / len(grouped_df)
 
         tweets_over_time = grouped_df.cumsum().plot(
