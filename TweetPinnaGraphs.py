@@ -35,6 +35,7 @@ import sys
 import time
 import numpy as np
 
+
 try:
     if os.path.isfile(sys.argv[1]):
         if check_config(sys.argv[1]):
@@ -102,38 +103,33 @@ def tweets_by_day(n):
 
     :param int n: the number of tweets to consider
     """
-    try:
-        tweet_timestamps = list(mongo_coll_tweets.find(
-            {'timestamp_ms': {'$exists': True}}, {'timestamp_ms': 1, '_id': 0}).sort([['_id', -1]]).limit(n))
-        tweet_datetimes = pd.to_datetime(
-            np.array(list(map(int, [d['timestamp_ms'] for d in tweet_timestamps]))), unit='ms')
 
-        df = pd.DataFrame(tweet_datetimes, columns=['date'])
-        df.set_index('date', drop=False, inplace=True)
-        grouped_df = df.groupby(pd.Grouper(freq='1d')).count()
-        grouped_df_average = grouped_df["date"].sum() / len(grouped_df)
-        grouped_df['day'] = grouped_df.date.keys().strftime('%Y-%m-%d')
+    tweet_timestamps = list(mongo_coll_tweets.find(
+        {'timestamp_ms': {'$exists': True}}, {'timestamp_ms': 1, '_id': 0}).sort([['_id', -1]]).limit(n))
+    tweet_datetimes = pd.to_datetime(
+        np.array(list(map(int, [d['timestamp_ms'] for d in tweet_timestamps]))), unit='ms')
 
-        tweets_by_day = grouped_df.plot(
-            kind='bar', x=grouped_df["day"], legend=False, color='#262626',
-            rot=75)
-        tweets_by_day.set_xlabel('Date', fontsize=12)
-        tweets_by_day.set_ylabel('Nr. of Tweets', fontsize=12)
-        tweets_by_day.set_title(
-            'Tweets by Day\n({} Tweets, avg. {} Tweets/day)\n {}'.
-            format(n, grouped_df_average, time.strftime("%Y-%m-%d %H:%M:%S")),
-            position=(0.5, 1.05))
+    df = pd.DataFrame(tweet_datetimes, columns=['date'])
+    df.set_index('date', drop=False, inplace=True)
+    grouped_df = df.groupby(pd.Grouper(freq='1d')).count()
+    grouped_df_average = grouped_df["date"].sum() / len(grouped_df)
+    grouped_df['day'] = grouped_df.date.keys().strftime('%Y-%m-%d')
 
-        tweets_by_day.get_figure().savefig(
-            'dashboard/static/img/results/tweets-by-day.png',
-            bbox_inches='tight')
+    tweets_by_day = grouped_df.plot(
+        kind='bar', x='day', legend=False, color='#262626',
+        rot=75)
+    tweets_by_day.set_xlabel('Date', fontsize=12)
+    tweets_by_day.set_ylabel('Nr. of Tweets', fontsize=12)
+    tweets_by_day.set_title(
+        'Tweets by Day\n({} Tweets, avg. {} Tweets/day)\n {}'.
+        format(n, grouped_df_average, time.strftime("%Y-%m-%d %H:%M:%S")),
+        position=(0.5, 1.05))
 
-        log.log_add(1, 'Graph tweets-by-day.png created')
-    except Exception as e:
-        log.log_add(3,
-                    'Graph tweets-by-day.png could \
-                    not be created ({})'.format(e))
-        return False
+    tweets_by_day.get_figure().savefig(
+        'dashboard/static/img/results/tweets-by-day.png',
+        bbox_inches='tight')
+
+    log.log_add(1, 'Graph tweets-by-day.png created')
 
 
 def tweets_over_time(n):
