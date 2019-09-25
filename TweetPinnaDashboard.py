@@ -104,7 +104,7 @@ def get_hashtags():
         hashtags = mongo_coll_tweets.aggregate(pipeline)
         hashtags_list = []
         for hashtag in hashtags:
-            hashtags_list.append((hashtag.values()[1], hashtag.values()[0]))
+            hashtags_list.append((list(hashtag.values())[1], list(hashtag.values())[0]))
 
         cache.set('hashtags-list', hashtags_list,
                   cfg.flask_cache_timeout * 60)
