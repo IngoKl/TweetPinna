@@ -117,7 +117,6 @@ if __name__ == '__main__':
             time.sleep(10)
 
             replies = get_replies(tweet['user']['screen_name'], tweet['id'])
-            print(len(replies))
             if len(replies) > 0:
                 stored = store_tweets(replies)
                 log.log_add(1, f'Archieved {len(stored)} replies to {tweet["id"]}')
