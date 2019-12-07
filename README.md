@@ -46,6 +46,8 @@ If you decide to not download images immediately (`media_download_instantly : 0`
 ### Archiving Replies
 Since Twitter (at least with free API access) does not allow you to track/search for replies directly, TweetPinna tries to archive these via the user's timelines. Tracking replies, due to these restrictions, is time-sensitive. Thus, you should set up a job running `TweetPinnaReplies.py config.cfg <limit>` with a limit that resembles how many tweets have been tracked per job execution. Hence, if you are tracking approximately 500 tweets per hour, you should run this at least hourly with a limit of 500.
 
+Also, keep in mind that this method is far from perfect and especially does not account for the fact that replies can be added later. Therefore, in the example above, you would only track replies which were made fairly immediately.
+
 ### restart.sh
 If persistent logging/tracking is paramount, `restart.sh` can be called from time to time (cronjob) in order to restart both TweetPinna and the MongoDB service in case they are down for some reason. While this is certainly not the 'cleanest' solution, it works well in practice.
 
