@@ -15,7 +15,7 @@ python TweetPinnaTimeline.py TweetPinnaDefault.cfg"
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.0.9
+Version: 1.1.0
 Status: Protoype
 
 Example:
@@ -103,8 +103,8 @@ if __name__ == '__main__':
         try:
             tweets = get_tweets(screen_name)
             for tweet in tweets:
-                if mongo_coll_tweets.find({'id': tweet._json["id"]}).count_documents() == 0:
+                if mongo_coll_tweets.find({'id': tweet._json["id"]}).count() == 0:
                     insert = mongo_coll_tweets.insert_one(tweet._json)
-                    inser_id = insert.inserted_id
+                    insert_id = insert.inserted_id
         except Exception as e:
                 log.log_add(2, 'Timeline: {} {}'.format(e, cfg.instance_name))

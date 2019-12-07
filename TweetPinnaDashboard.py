@@ -10,7 +10,7 @@ This script provides a simple dashboard written in Flask.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2018)
 License: MIT
-Version: 1.0.9
+Version: 1.1.0
 Status: Protoype
 
 Example:
@@ -321,6 +321,23 @@ def timelines():
         instance_ver=get_version(),
         no_tracked_users=len(cfg.twitter_tracking_users),
         users=tracked_users)
+
+
+@app.route('/tweet/<tweet_id>')
+def show_tweet(tweet_id):
+    """Flask Tweet route"""
+
+    try:
+        tweet = mongo_coll_tweets.find_one({'id_str': tweet_id})
+        replies = list(mongo_coll_tweets.find({'in_reply_to_status_id_str': tweet_id}))
+    except Exception as e:
+        log.log_add(3, f'{e}')
+        tweet = None
+        replies = None
+
+    return render_template(
+        'show_tweet.html', instance_name=cfg.instance_name,
+        instance_ver=get_version(), tweet=tweet, replies=replies)
 
 
 @app.route('/ajax/get/hashtags')

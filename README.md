@@ -15,6 +15,7 @@ As of now, TweetPinna is able to archive tweets based on search terms and/or has
 * Preview of random tweets
 * Tracking user's timelines
 * Tracking basd on locations / boundary boxes
+* Archiving replies to tweets (limited)
 
 ## Installation and Usage
 1. Install and configure MongoDB (currently TweetPinna does not support authentication)
@@ -67,7 +68,8 @@ If persistent logging/tracking is paramount, `restart.sh` can be called from tim
 - [ ] Dashboard should not start without MongoDB connection -> implement global db checks
 - [ ] Before adding a tweet to the DB we should check whether it already exists
 - [ ] The "Tweets over Time" graph(s) doesn't show the actual number of tweets due to scaling effects
-- [ ] Add functionality to track replies to tweets
+- [ ] Switch over to f-Strings
+
 
 ## Special Behaviour
 If the database (MongoDB) becomes unavailable for any reason, TweetPinna continues to collect tweets. Once the connection is reestablished, the tweet-buffer is dumped into the database. While this behaviour can be memory heavy, it ensures that no (less) tweets are lost. If you want to disable this function set `tweet_buffer : 0`.

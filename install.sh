@@ -33,6 +33,18 @@ case $yn in
     * ) echo "Please answer yes or no.";;
 esac
 
+read -p "Do you want to install a default cronjob for retrieving replies? [yes/no]: " yn
+case $yn in
+    [Yy]* ) 
+		crontab -l > current_crons
+		echo "*/30 * * * * bash -c \"cd $PWD && python TweetPinnaReplies.py cfg/TweetPinnaDefault.cfg 250\"" >> current_crons
+		crontab current_crons
+		rm current_crons
+		;;
+    [Nn]* ) ;;
+    * ) echo "Please answer yes or no.";;
+esac
+
 read -p "Do you want to install a default cronjob for automated restart? [yes/no]: " yn
 case $yn in
     [Yy]* ) 

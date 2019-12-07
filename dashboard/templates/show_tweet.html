@@ -1,0 +1,46 @@
+{% extends "index.html" %}
+{% block body %}
+
+<div class="container-fluid">
+
+<h1>Tweet</h1>
+<p><strong>Tweet:</strong> {{ tweet['id'] }}</p>
+
+
+<div class="card" style="margin-bottom: 10px;">
+  <div class="card-block">
+    <h6 class="card-title">@{{ tweet['user']['screen_name'] }} <span style="color: #D3D3D3">ID: {{ tweet['id'] }}</span></h4>
+    <p class="card-text">
+      {% if tweet['full_text'] %}
+        {{ tweet['full_texttext']|safe }}
+      {% else %}
+        {{ tweet['text']|safe }}
+      {% endif %}
+    </p>
+  </div>
+</div>
+
+<br>
+
+{% if replies|length > 0 %}
+  <h2>Replies</h2>
+
+  {% for reply in replies %}
+  <div class="card" style="margin-bottom: 10px;">
+    <div class="card-block">
+      <h6 class="card-title">@{{ reply['user']['screen_name'] }} <span style="color: #D3D3D3">ID: {{ reply['id'] }}</span></h4>
+      <p class="card-text">
+        {% if reply['full_text'] %}
+          {{ reply['full_text']|safe }}
+        {% else %}
+          {{ reply['text']|safe }}
+        {% endif %}
+      </p>
+    </div>
+  </div>
+  {% endfor %}
+{% endif %}
+
+</div>
+
+{% endblock %}

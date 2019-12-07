@@ -66,8 +66,14 @@
 
         <div class="card" style="margin-bottom: 10px;">
           <div class="card-block">
-            <h6 class="card-title">@{{ tweet['user']['screen_name'] }}</h4>
-            <p class="card-text">{{ tweet['text']|safe }}</p>
+            <h6 class="card-title">@{{ tweet['user']['screen_name'] }} <span style="color: #D3D3D3">ID: <a href="/tweet/{{ tweet['id'] }}">{{ tweet['id'] }}</a></span></h4>
+            <p class="card-text">
+              {% if tweet['full_text'] %}
+                {{ tweet['full_text']|safe }}
+              {% else %}
+                {{ tweet['text']|safe }}
+              {% endif %}
+            </p>
           </div>
         </div>
 
