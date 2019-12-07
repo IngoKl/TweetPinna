@@ -12,7 +12,7 @@
     <h6 class="card-title">@{{ tweet['user']['screen_name'] }} <span style="color: #D3D3D3">ID: {{ tweet['id'] }}</span></h4>
     <p class="card-text">
       {% if tweet['full_text'] %}
-        {{ tweet['full_texttext']|safe }}
+        {{ tweet['full_text']|safe }}
       {% else %}
         {{ tweet['text']|safe }}
       {% endif %}
