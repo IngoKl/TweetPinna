@@ -15,7 +15,7 @@ python TweetPinnaGraphs.py TweetPinnaDefault.cfg"
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2017)
 License: MIT
-Version: 1.1.0
+Version: 1.1.1
 Status: Protoype
 
 Example:
@@ -85,7 +85,7 @@ def tweets_by_hour(n):
         tweets_by_hour.set_ylabel('Nr. of Tweets', fontsize=12)
         tweets_by_hour.set_title(
             'Tweets by Hour\n({} Tweets, avg. {} Tweets/h)\n {}'.format(
-                n, grouped_df_average, time.strftime("%Y-%m-%d %H:%M:%S")),
+                n, round(grouped_df_average), time.strftime("%Y-%m-%d %H:%M:%S")),
             position=(0.5, 1.05))
         tweets_by_hour.get_figure().savefig(
             'dashboard/static/img/results/tweets-by-hour.png',
@@ -122,7 +122,7 @@ def tweets_by_day(n):
         tweets_by_day.set_ylabel('Nr. of Tweets', fontsize=12)
         tweets_by_day.set_title(
             'Tweets by Day\n({} Tweets, avg. {} Tweets/day)\n {}'.
-            format(n, grouped_df_average, time.strftime("%Y-%m-%d %H:%M:%S")),
+            format(n, round(grouped_df_average), time.strftime("%Y-%m-%d %H:%M:%S")),
             position=(0.5, 1.05))
 
         tweets_by_day.get_figure().savefig(
@@ -159,7 +159,7 @@ def tweets_over_time(n):
         tweets_over_time.set_xlabel('Date', fontsize=12)
         tweets_over_time.set_ylabel('Nr. of Additional Tweets', fontsize=12)
         tweets_over_time.set_title('Tweets over Time\n({} Tweets, avg. {} Tweets/day)\n {})'.
-                                   format(n, grouped_df_average, time.strftime("%Y-%m-%d %H:%M:%S")),
+                                   format(n, round(grouped_df_average), time.strftime("%Y-%m-%d %H:%M:%S")),
                                           position=(0.5, 1.05))
         tweets_over_time.get_figure().savefig(
             'dashboard/static/img/results/tweets-over-time.png',

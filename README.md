@@ -74,6 +74,7 @@ If persistent logging/tracking is paramount, `restart.sh` can be called from tim
 - [ ] Before adding a tweet to the DB we should check whether it already exists
 - [ ] The "Tweets over Time" graph(s) doesn't show the actual number of tweets due to scaling effects
 - [ ] Switch over to f-Strings
+- [ ] Add full support for 'extended_tweet' objects
 
 
 ## Special Behaviour

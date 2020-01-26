@@ -91,8 +91,12 @@ ENV/
 # Rope project settings
 .ropeproject
 
-# Test CFG
-cfg/Test.cfg
+# Test CFGs
+cfg/*.cfg
+!cfg/TweetPinnaDefault.cfg
+
+# Logfiles
+log/*.*
 
 # Storage
 /storage/media/photos/*

@@ -6,17 +6,51 @@
 <h1>Tweet</h1>
 <p><strong>Tweet:</strong> {{ tweet['id'] }}</p>
 
+{% if tweet['in_reply_to_status_id_str'] %}
+<p>
+  This tweet is a <strong>reply to status</strong>: <a href="/tweet/{{ tweet['in_reply_to_status_id_str'] }}">{{ tweet['in_reply_to_status_id_str'] }}</a>
+</p>
+{% endif %}
+
+{% if tweet['in_reply_to_user_id_str'] %}
+<p>
+  This tweet is a <strong>reply to user</strong>: {{ tweet['in_reply_to_user_id_str'] }}.
+</p>
+{% endif %}
+
 
 <div class="card" style="margin-bottom: 10px;">
   <div class="card-block">
-    <h6 class="card-title">@{{ tweet['user']['screen_name'] }} <span style="color: #D3D3D3">ID: {{ tweet['id'] }}</span></h4>
+    <h6 class="card-title">@{{ tweet['user']['screen_name'] }} <span style="color: #D3D3D3">ID: {{ tweet['id'] }}</span> ({{ tweet['created_at']}})</h4>
+
     <p class="card-text">
-      {% if tweet['full_text'] %}
+      {% if tweet['text_html_annotated'] %}
+        {{ tweet['text_html_annotated']|safe }}
+      {% elif tweet['extended_tweet'] %}
+        {{ tweet['extended_tweet']['full_text']|safe }}
+      {% elif tweet['full_text'] %}
         {{ tweet['full_text']|safe }}
       {% else %}
         {{ tweet['text']|safe }}
       {% endif %}
     </p>
+    {% if tweet['entities']['urls']|length > 0 %}
+    <br>
+    <p class="card-text">
+        <strong>URLs</strong><br>
+        <ul>
+        {% if (tweet['extended_tweet']) and (tweet['extended_tweet']['entities']['urls']|length > 0) %}
+          {% for url in tweet['extended_tweet']['entities']['urls'] %}
+            <li><a href="{{ url['expanded_url'] }}">{{ url['display_url'] }}</a></li>
+          {% endfor %}
+        {% else %}
+          {% for url in tweet['entities']['urls'] %}
+            <li><a href="{{ url['expanded_url'] }}">{{ url['display_url'] }}</a></li>
+          {% endfor %}
+        {% endif %}
+        </ul>
+    </p>
+    {% endif %}
   </div>
 </div>
 
@@ -28,19 +62,40 @@
   {% for reply in replies %}
   <div class="card" style="margin-bottom: 10px;">
     <div class="card-block">
-      <h6 class="card-title">@{{ reply['user']['screen_name'] }} <span style="color: #D3D3D3">ID: {{ reply['id'] }}</span></h4>
+      <h6 class="card-title">@{{ reply['user']['screen_name'] }} <span style="color: #D3D3D3">ID: {{ reply['id'] }}</span> ({{ reply['created_at']}})</h4>
       <p class="card-text">
-        {% if reply['full_text'] %}
+        {% if reply['text_html_annotated'] %}
+          {{ reply['text_html_annotated']|safe }}
+        {% elif reply['extended_tweet'] %}
+          {{ reply['extended_tweet']['full_text']|safe }}
+        {% elif reply['full_text'] %}
           {{ reply['full_text']|safe }}
         {% else %}
           {{ reply['text']|safe }}
         {% endif %}
       </p>
+      {% if reply['entities']['urls']|length > 0 %}
+      <br>
+      <p class="card-text">
+        <strong>URLs</strong><br>
+        <ul>
+        {% if (reply['extended_tweet']) and (reply['extended_tweet']['entities']['urls']|length > 0) %}
+          {% for url in reply['extended_tweet']['entities']['urls'] %}
+            <li><a href="{{ url['expanded_url'] }}">{{ url['display_url'] }}</a></li>
+          {% endfor %}
+        {% else %}
+          {% for url in reply['entities']['urls'] %}
+            <li><a href="{{ url['expanded_url'] }}">{{ url['display_url'] }}</a></li>
+          {% endfor %}
+        {% endif %}
+        </ul>
+      </p>
+      {% endif %}
     </div>
   </div>
   {% endfor %}
+
 {% endif %}
 
 </div>
-
 {% endblock %}

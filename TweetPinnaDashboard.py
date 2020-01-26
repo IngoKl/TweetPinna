@@ -10,7 +10,7 @@ This script provides a simple dashboard written in Flask.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2018)
 License: MIT
-Version: 1.1.0
+Version: 1.1.1
 Status: Protoype
 
 Example:
@@ -60,34 +60,48 @@ mongo_coll_tweets = mongo_db[cfg.mongo_coll]
 
 
 def html_ann_tweet(tweets):
-    """Adding html to tweets in order to display them on the dashboard."""
+    """Adding html to tweets in order to display them on the dashboard. Changes the tweet object!"""
     for tweet in tweets:
 
-        if 'text' not in tweet.keys():
-            tweet['text'] = tweet['full_text']
+        # Fairly efficient way of dealing with the fact that these keys might not exist
+        try:
+            text = tweet['text']
+        except:
+            pass
+
+        try:
+            text = tweet['full_text']
+        except:
+            pass
+
+        try:
+            text = tweet['extended_tweet']['full_text']
+        except:
+            pass
+
 
         # Hashtags
-        tweet['text'] = re.sub(r'\B#\w\w+',
+        tweet['text_html_annotated'] = re.sub(r'\B#\w\w+',
                                '<span class="hashtag">\g<0></span>',
-                               tweet['text'])
+                               text)
 
         # Usernames
-        tweet['text'] = re.sub(r'(?<=^|(?<=[^a-zA-Z0-9-_\.]))@'
+        tweet['text_html_annotated'] = re.sub(r'(?<=^|(?<=[^a-zA-Z0-9-_\.]))@'
                                r'([A-Za-z]+[A-Za-z0-9]+)',
                                '<span class="user">\g<0></span>',
-                               tweet['text'])
+                               tweet['text_html_annotated'])
 
         # Links
-        tweet['text'] = re.sub(
+        tweet['text_html_annotated'] = re.sub(
             r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|'
             r'(?:%[0-9a-fA-F][0-9a-fA-F]))+', '<a href="\g<0>">\g<0></a>',
-            tweet['text'])
+            tweet['text_html_annotated'])
 
     return tweets
 
 
 def get_hashtags():
-    """Get a list of hashtags from highest to lowest frequency.
+    """Get a list of hashtags from highest to lowest frequency. This does not (yet) take into account 'extended tweets'.
 
     :return list: all hashtags and their frequency
     """
@@ -161,6 +175,7 @@ def get_last_entry_time():
 def get_random_tweets(n):
     """Getting n random tweets from the collection."""
     sample = list(mongo_coll_tweets.aggregate([{'$sample': {'size': n}}]))
+
     return sample
 
 
@@ -337,7 +352,7 @@ def show_tweet(tweet_id):
 
     return render_template(
         'show_tweet.html', instance_name=cfg.instance_name,
-        instance_ver=get_version(), tweet=tweet, replies=replies)
+        instance_ver=get_version(), tweet=html_ann_tweet([tweet])[0], replies=html_ann_tweet(replies))
 
 
 @app.route('/ajax/get/hashtags')

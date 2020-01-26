@@ -10,7 +10,7 @@ This script tries to retrieve replies to tweets.
 
 Author: Ingo Kleiber <ingo@kleiber.me> (2019)
 License: MIT
-Version: 1.1.0
+Version: 1.1.1
 Status: Protoype
 
 Example:
