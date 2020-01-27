@@ -4,7 +4,7 @@
 TweetPinna is a tweet archiver that saves tweets and metadata to MongoDB. It is designed for long-running archival projects (e.g. for academic use) and is based on [Tweepy](http://www.tweepy.org/). 
 As of now, TweetPinna is able to archive tweets based on search terms and/or hashtags as well as based on location. There is rudimentary support for archiving specific user's timelines.
 
-> TweetPinna, as of 1.0.9, supports Python 3. However, the original TweetPinna was in written in (legacy) Python (2.7x). I'm in the process of refactoring (and actually moving away from legacy Python) the whole codebase. 
+> TweetPinna, as of 1.0.9, supports Python 3. However, the original TweetPinna, development started in early 2014, was in written in (legacy) Python (2.7x). I'm in the process of hopefully refactoring (and actually moving away from legacy Python) the whole codebase. 
 > The project, as it stands right now, works fine, but is fairly messy. There will be (very infrequent) marginal updates to this legacy version.
 
 ## Features
