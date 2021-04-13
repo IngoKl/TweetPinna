@@ -50,15 +50,15 @@ class TwitterStreamListener(tweepy.StreamListener):
     def connect_mongodb(self):
         """Connecting to MongoDB."""
         try:
-            self.mongo_client = MongoClient(cfg.mongo_path,
+            self.mongo_client = MongoClient(cfg['mongo_path'],
                                             connectTimeoutMS=500,
                                             serverSelectionTimeoutMS=500)
 
             # Check whether the connection is established or not
             self.mongo_client.server_info()
 
-            self.mongo_db = self.mongo_client[cfg.mongo_db]
-            self.mongo_coll_tweets = self.mongo_db[cfg.mongo_coll]
+            self.mongo_db = self.mongo_client[cfg['mongo_db']]
+            self.mongo_coll_tweets = self.mongo_db[cfg['mongo_coll']]
 
             self.mongo_db_connected = True
             log.log_add(2, 'Connection to MongoDB established')
@@ -68,7 +68,7 @@ class TwitterStreamListener(tweepy.StreamListener):
     @staticmethod
     def media_download(insert_id):
         """Calling the media downloader."""
-        if cfg.media_download_instantly == 1:
+        if cfg['media_download_instantly'] == 1:
             try:
                 fnull = open(os.devnull, 'w')
                 subprocess.Popen(["python", "TweetPinnaImageDownloader.py",
@@ -87,11 +87,11 @@ class TwitterStreamListener(tweepy.StreamListener):
             self.media_download(insert_id)
             self.counter += 1
         except errors.ServerSelectionTimeoutError:
-            log.log_add(cfg.log_email_threshold,
+            log.log_add(cfg['log_email_threshold'],
                         'MongoDB ServerSelectionTimeoutError')
             self.connect_mongodb()
         except Exception as e:
-            log.log_add(cfg.log_email_threshold,
+            log.log_add(cfg['log_email_threshold'],
                         'Could not write to MongoDB ({})'.format(e))
 
     def clear_buffer(self):
@@ -111,7 +111,7 @@ class TwitterStreamListener(tweepy.StreamListener):
             if len(self.status_buffer) > 1:
                 _thread.start_new(self.clear_buffer, ())
         else:
-            if cfg.tweet_buffer == 1 and len(self.status_buffer) < cfg.tweet_buffer_max:
+            if cfg['tweet_buffer'] == 1 and len(self.status_buffer) < cfg['tweet_buffer_max']:
                 self.status_buffer.append(status)
             _thread.start_new(self.connect_mongodb, ())
 
@@ -147,8 +147,8 @@ class Logger():
         self.last_message = None
         self.last_twitter_error_message = None
         self.last_email_messages = {}
-        if not os.path.isdir(self.cfg.log_dir):
-            os.makedirs(self.cfg.log_dir)
+        if not os.path.isdir(self.cfg['log_dir']):
+            os.makedirs(self.cfg['log_dir'])
 
     def log_add(self, level, message):
         """Adding an entry to the current logfile.
@@ -158,17 +158,17 @@ class Logger():
         self.last_message = message
         log_date = time.strftime("%Y-%m-%d")
         log_time = time.strftime("%H:%M:%S")
-        log_file = open('{}/{}-{}.log'.format(self.cfg.log_dir,
-                                              self.cfg.instance_name,
+        log_file = open('{}/{}-{}.log'.format(self.cfg['log_dir'],
+                                              self.cfg['instance_name'],
                                               log_date), 'a')
         log_file.write('[{0} {1}][{2}] {3}\n'.
                        format(log_date, log_time, level, message))
         log_file.close()
 
-        if (level >= self.cfg.log_email_threshold and
-                self.cfg.log_email_enabled == 1):
+        if (level >= self.cfg['log_email_threshold'] and
+                self.cfg['log_email_enabled'] == 1):
             self.log_send_email(
-                'Level {} Event in {}'.format(level, self.cfg.instance_name),
+                'Level {} Event in {}'.format(level, self.cfg['instance_name']),
                 message)
 
     def log_tail(self, n):
@@ -178,12 +178,12 @@ class Logger():
         :return list: a list of entries
         """
         log_date = time.strftime("%Y-%m-%d")
-        if os.path.isfile('{}/{}-{}.log'.format(self.cfg.log_dir,
-                                                self.cfg.instance_name,
+        if os.path.isfile('{}/{}-{}.log'.format(self.cfg['log_dir'],
+                                                self.cfg['instance_name'],
                                                 log_date)):
 
-            with open('{}/{}-{}.log'.format(self.cfg.log_dir,
-                                            self.cfg.instance_name,
+            with open('{}/{}-{}.log'.format(self.cfg['log_dir'],
+                                            self.cfg['instance_name'],
                                             log_date)) as log_file:
                 lines = log_file.readlines()
                 if n == 0:
@@ -204,31 +204,31 @@ class Logger():
             ) - self.last_email_messages[message]
             time_div = divmod(time_div.days * 86400 + time_div.seconds, 60)
         except KeyError:
-            time_div = (self.cfg.log_email_threshold + 1, 0)
+            time_div = (self.cfg['log_email_threshold'] + 1, 0)
 
-        if (time_div[0] > self.cfg.email_spam_wait):
+        if (time_div[0] > self.cfg['email_spam_wait']):
             try:
                 self.last_email_messages[message] = datetime.datetime.now()
 
                 msg = MIMEText(message)
                 msg['Subject'] = subject
-                msg['From'] = self.cfg.email_sender
-                msg['To'] = self.cfg.email_receiver
+                msg['From'] = self.cfg['email_sender']
+                msg['To'] = self.cfg['email_receiver']
 
                 s = smtplib.SMTP(
-                    self.cfg.email_server,
-                    self.cfg.email_server_port)
-                if self.cfg.email_starttls == 1:
+                    self.cfg['email_server'],
+                    self.cfg['email_server_port'])
+                if self.cfg['email_starttls'] == 1:
                     s.starttls()
-                s.login(self.cfg.email_user, self.cfg.email_password)
+                s.login(self.cfg['email_user'], self.cfg['email_password'])
                 s.sendmail(
-                    self.cfg.email_sender, [
-                        self.cfg.email_receiver], msg.as_string())
+                    self.cfg['email_sender'], [
+                        self.cfg['email_receiver']], msg.as_string())
                 s.quit()
                 self.log_add(1, 'Email sent')
             except Exception:
                 self.log_add(
-                    self.cfg.log_email_threshold - 1,
+                    self.cfg['log_email_threshold'] - 1,
                     'Could not send email')
         else:
             log.log_add(2, 'Email has not been sent to prevent spam')
@@ -242,9 +242,9 @@ def start_stream(stream):
     log.log_add(1, 'Stream started by start_stream')
 
     try:
-        twitter_stream.filter(track=cfg.twitter_tracking_terms, is_async=True)
+        twitter_stream.filter(track=cfg['twitter_tracking_terms'], is_async=True)
     except Exception as e:
-        log.log_add(cfg.log_email_threshold,
+        log.log_add(cfg['log_email_threshold'],
                     'twitter_stream Exception ({})'.format(e.message))
         end_script(stream)
 
@@ -265,9 +265,9 @@ def signal_handler(signum, frame):
     """Handlig interrupt signals."""
     stop_stream(twitter_stream)
     log.log_add(1, 'Interrupted by signal {}'.format(signum))
-    log.log_add(1, 'Ending TweetPinna (Inst.: {})'.format(cfg.instance_name))
+    log.log_add(1, 'Ending TweetPinna (Inst.: {})'.format(cfg['instance_name']))
     print ('[{}] Ending TweetPinna (Inst.: {})'.
-           format(time.strftime("%Y-%m-%d %H:%M:%S"), cfg.instance_name))
+           format(time.strftime("%Y-%m-%d %H:%M:%S"), cfg['instance_name']))
     sys.exit(1)
 
 
@@ -277,9 +277,9 @@ def end_script(stream):
     :param stream object stream: the Tweepy stream object
     """
     stop_stream(stream)
-    log.log_add(1, 'Ending TweetPinna (Inst.: {})'.format(cfg.instance_name))
+    log.log_add(1, 'Ending TweetPinna (Inst.: {})'.format(cfg['instance_name']))
     print ('[{}] Ending TweetPinna (Inst.: {})'.
-           format(time.strftime("%Y-%m-%d %H:%M:%S"), cfg.instance_name))
+           format(time.strftime("%Y-%m-%d %H:%M:%S"), cfg['instance_name']))
 
     os._exit(0)
     sys.exit(1)
@@ -293,7 +293,7 @@ def check_config(config_file_path):
     reference_cfg = config.Config(open('cfg/TweetPinnaDefault.cfg', 'r'))
     test_cfg = config.Config(open(config_file_path, 'r'))
 
-    for cfg_entry in reference_cfg:
+    for cfg_entry in reference_cfg.as_dict().keys():
         if cfg_entry not in test_cfg:
             print ('Option {} is missing in the configuration'.
                    format(cfg_entry))
@@ -324,17 +324,17 @@ if __name__ == '__main__':
 
     # TweetPinna
     print('[{}] Starting TweetPinna (Inst.: {})'.
-           format(time.strftime("%Y-%m-%d %H:%M:%S"), cfg.instance_name))
-    log.log_add(1, 'Starting TweetPinna (Inst.: {})'.format(cfg.instance_name))
+           format(time.strftime("%Y-%m-%d %H:%M:%S"), cfg['instance_name']))
+    log.log_add(1, 'Starting TweetPinna (Inst.: {})'.format(cfg['instance_name']))
 
     # Initialize Tweepy
     twitter_listener = TwitterStreamListener()
     auth = tweepy.OAuthHandler(
-        cfg.twitter_consumer_key,
-        cfg.twitter_consumer_secret)
+        cfg['twitter_consumer_key'],
+        cfg['twitter_consumer_secret'])
     auth.set_access_token(
-        cfg.twitter_access_token,
-        cfg.twitter_access_token_secret)
+        cfg['twitter_access_token'],
+        cfg['twitter_access_token_secret'])
     api = tweepy.API(auth)
     twitter_stream = tweepy.Stream(auth=api.auth, listener=twitter_listener)
     start_stream(twitter_stream)
@@ -349,7 +349,7 @@ if __name__ == '__main__':
             twitter_420_429s += 1
             if twitter_420_429s > 3 and twitter_420_429_escalation == 3:
                 log.log_add(
-                    cfg.log_email_threshold,
+                    cfg['log_email_threshold'],
                     'Too many 420/429s, Disengaging')
                 end_script(twitter_stream)
             if twitter_420_429s == 3 and twitter_420_429_escalation == 2:
@@ -368,14 +368,14 @@ if __name__ == '__main__':
         # Handling 401 Error
         if log.last_twitter_error_message == 401:
             log.log_add(
-                cfg.log_email_threshold,
+                cfg['log_email_threshold'],
                 'Twitter Authentication failed')
             stop_stream(twitter_stream)
             keep_running = False
 
         # Printing current streaming status
         current_count = twitter_listener.counter
-        if (current_count % cfg.report_steps ==
+        if (current_count % cfg['report_steps'] ==
                 0 and current_count > last_tweet_milestone):
             last_tweet_milestone = current_count
             print ('[{}] {} Tweets have been saved'.

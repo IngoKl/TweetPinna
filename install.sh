@@ -3,7 +3,9 @@ read -p "Do you want to download all Python dependencies? [yes/no]: " yn
 case $yn in
     [Yy]* ) 
 		pip install -r requirements.txt
-		pip install git+git://github.com/tweepy/tweepy/@master
+
+		# The Tweepy API changed after 3.10.0
+		#pip install git+git://github.com/tweepy/tweepy/@master
 		;;
     [Nn]* ) ;;
     * ) echo "Please answer yes or no.";;

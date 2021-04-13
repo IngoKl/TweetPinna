@@ -53,10 +53,10 @@ except IndexError:
 cache = SimpleCache()
 
 # MongoDB
-mongo_client = MongoClient(cfg.mongo_path, connectTimeoutMS=500,
+mongo_client = MongoClient(cfg['mongo_path'], connectTimeoutMS=500,
                            serverSelectionTimeoutMS=500)
-mongo_db = mongo_client[cfg.mongo_db]
-mongo_coll_tweets = mongo_db[cfg.mongo_coll]
+mongo_db = mongo_client[cfg['mongo_db']]
+mongo_coll_tweets = mongo_db[cfg['mongo_coll']]
 
 
 def html_ann_tweet(tweets):
@@ -121,7 +121,7 @@ def get_hashtags():
             hashtags_list.append((list(hashtag.values())[1], list(hashtag.values())[0]))
 
         cache.set('hashtags-list', hashtags_list,
-                  cfg.flask_cache_timeout * 60)
+                  cfg['flask_cache_timeout'] * 60)
 
     return hashtags_list
 
@@ -132,7 +132,7 @@ def get_number_hashtags():
     if hashtags_number is None:
         hashtags_number = len(get_hashtags())
         cache.set('hashtags-number', hashtags_number,
-                  cfg.flask_cache_timeout * 60)
+                  cfg['flask_cache_timeout'] * 60)
 
     return hashtags_number
 
@@ -211,10 +211,10 @@ def generate_statistics():
         statistics['nr_tokens'] = ('Number of Tokens', get_token_count())
         statistics['media_storage_size'] = ('Storage Folder Size (MB)',
                                             str(get_folder_size(
-                                                cfg.media_storage)))
+                                                cfg['media_storage'])))
 
         cache.set('statistics', statistics,
-                  cfg.flask_cache_timeout * 60)
+                  cfg['flask_cache_timeout'] * 60)
 
     return statistics
 
@@ -261,10 +261,10 @@ app = Flask(
 
 basic_auth = BasicAuth(app)
 # Activate Basic Auth
-if cfg.dashboard_username:
+if cfg['dashboard_username']:
     app.config['BASIC_AUTH_FORCE'] = True
-    app.config['BASIC_AUTH_USERNAME'] = cfg.dashboard_username
-    app.config['BASIC_AUTH_PASSWORD'] = cfg.dashboard_password
+    app.config['BASIC_AUTH_USERNAME'] = cfg['dashboard_username']
+    app.config['BASIC_AUTH_PASSWORD'] = cfg['dashboard_password']
 
 @app.errorhandler(500)
 def internal_error_handler(error):
@@ -281,12 +281,12 @@ def not_found_error_handler(error):
 @app.route('/')
 def index():
     """Flask Welcome Route."""
-    bounding_boxes = [coordinate for box in cfg.twitter_tracking_locations for coordinate in box]
-    return render_template('welcome.html', instance_name=cfg.instance_name,
+    bounding_boxes = [coordinate for box in cfg['twitter_tracking_locations'] for coordinate in box]
+    return render_template('welcome.html', instance_name=cfg['instance_name'],
                            instance_ver=get_version(),
                            docs_in_collection=mongo_coll_tweets.count(),
                            last_entry_time=get_last_entry_time(),
-                           tracking_terms=cfg.twitter_tracking_terms,
+                           tracking_terms=cfg['twitter_tracking_terms'],
                            tracking_locations=bounding_boxes,
                            random_tweets=html_ann_tweet(get_random_tweets(5)))
 
@@ -295,7 +295,7 @@ def index():
 def logfile():
     """Flask Logfile Route."""
     return render_template(
-        'logfile.html', instance_name=cfg.instance_name,
+        'logfile.html', instance_name=cfg['instance_name'],
         instance_ver=get_version(),
         logfile=log.log_tail(10))
 
@@ -304,7 +304,7 @@ def logfile():
 def hashtags():
     """Flask Hashtag Route."""
     return render_template(
-        'hashtags.html', instance_name=cfg.instance_name,
+        'hashtags.html', instance_name=cfg['instance_name'],
         instance_ver=get_version())
 
 
@@ -312,7 +312,7 @@ def hashtags():
 def media():
     """Flask Media Route."""
     return render_template(
-        'media.html', instance_name=cfg.instance_name,
+        'media.html', instance_name=cfg['instance_name'],
         instance_ver=get_version())
 
 
@@ -320,7 +320,7 @@ def media():
 def statistics():
     """Flask Statistics Route."""
     return render_template(
-        'statistics.html', instance_name=cfg.instance_name,
+        'statistics.html', instance_name=cfg['instance_name'],
         instance_ver=get_version())
 
 
@@ -328,13 +328,13 @@ def statistics():
 def timelines():
     """Flask Timelines Route."""
     tracked_users = []
-    for user in cfg.twitter_tracking_users:
+    for user in cfg['twitter_tracking_users']:
         tracked_users.append(get_user(user))
 
     return render_template(
-        'timelines.html', instance_name=cfg.instance_name,
+        'timelines.html', instance_name=cfg['instance_name'],
         instance_ver=get_version(),
-        no_tracked_users=len(cfg.twitter_tracking_users),
+        no_tracked_users=len(cfg['twitter_tracking_users']),
         users=tracked_users)
 
 
@@ -351,7 +351,7 @@ def show_tweet(tweet_id):
         replies = None
 
     return render_template(
-        'show_tweet.html', instance_name=cfg.instance_name,
+        'show_tweet.html', instance_name=cfg['instance_name'],
         instance_ver=get_version(), tweet=html_ann_tweet([tweet])[0], replies=html_ann_tweet(replies))
 
 
@@ -389,7 +389,7 @@ def ajax_get_statistics():
 @app.route('/ajax/get/storage-size')
 def ajax_get_storage_size():
     """Flask Ajax Get Storage Size Route."""
-    return str(get_folder_size(cfg.media_storage))
+    return str(get_folder_size(cfg['media_storage']))
 
 
 @app.route('/ajax/get/docs-in-collection')
@@ -407,4 +407,4 @@ def ajax_get_random_tweets(n):
 if __name__ == "__main__":
     # In production, the dashboard should be used with an actual webserver
     app.config['PROPAGATE_EXCEPTIONS'] = True
-    app.run(host=cfg.dashboard_host, port=cfg.dashboard_port, threaded=True)
+    app.run(host=cfg['dashboard_host'], port=cfg['dashboard_port'], threaded=True)

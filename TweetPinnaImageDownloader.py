@@ -49,10 +49,10 @@ except IndexError:
     log = Logger(cfg)
 
 # Create directories
-if not os.path.exists(cfg.media_photo_storage):
-    os.makedirs(cfg.media_photo_storage)
-if not os.path.exists(cfg.media_user_storage):
-    os.makedirs(cfg.media_user_storage)
+if not os.path.exists(cfg['media_photo_storage']):
+    os.makedirs(cfg['media_photo_storage'])
+if not os.path.exists(cfg['media_user_storage']):
+    os.makedirs(cfg['media_user_storage'])
 
 
 def signal_handler(signum, frame):
@@ -85,10 +85,10 @@ def download_media_file(type, url, filename, filetype='', copy_to=''):
     if (len(url) > 0):
         try:
             if type == 'photo':
-                path = cfg.media_photo_storage + filename
+                path = cfg['media_photo_storage'] + filename
             elif type in (
                     'user-profile-img', 'user-banner-img', 'user-bg-img'):
-                path = cfg.media_user_storage + filename
+                path = cfg['media_user_storage'] + filename
             else:
                 return False
 
@@ -119,9 +119,9 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
 
     # MongoDB
-    mongo_client = MongoClient(cfg.mongo_path)
-    mongo_db = mongo_client[cfg.mongo_db]
-    mongo_coll_tweets = mongo_db[cfg.mongo_coll]
+    mongo_client = MongoClient(cfg['mongo_path'])
+    mongo_db = mongo_client[cfg['mongo_db']]
+    mongo_coll_tweets = mongo_db[cfg['mongo_coll']]
 
     # Whole collections vs. individual ObjectId
     try:
@@ -164,7 +164,7 @@ if __name__ == '__main__':
         if "profile_image_url" in tweet["user"]:
             user_profile_image_url = tweet["user"]["profile_image_url"]
 
-            if cfg.media_profile_image_hd == 1:
+            if cfg['media_profile_image_hd'] == 1:
                 user_profile_image_url = user_profile_image_url.replace(
                     'normal', '400x400')
 

@@ -51,15 +51,15 @@ class TwitterStreamListener(tweepy.StreamListener):
     def connect_mongodb(self):
         """Connecting to MongoDB."""
         try:
-            self.mongo_client = MongoClient(cfg.mongo_path,
+            self.mongo_client = MongoClient(cfg['mongo_path'],
                                             connectTimeoutMS=500,
                                             serverSelectionTimeoutMS=500)
 
             # Check whether the connection is established or not
             self.mongo_client.server_info()
 
-            self.mongo_db = self.mongo_client[cfg.mongo_db]
-            self.mongo_coll_tweets = self.mongo_db[cfg.mongo_coll]
+            self.mongo_db = self.mongo_client[cfg['mongo_db']]
+            self.mongo_coll_tweets = self.mongo_db[cfg['mongo_coll']]
 
             self.mongo_db_connected = True
             log.log_add(2, 'Connection to MongoDB established')
@@ -69,7 +69,7 @@ class TwitterStreamListener(tweepy.StreamListener):
     @staticmethod
     def media_download(insert_id):
         """Calling the media downloader."""
-        if cfg.media_download_instantly == 1:
+        if cfg['media_download_instantly'] == 1:
             try:
                 fnull = open(os.devnull, 'w')
                 subprocess.Popen(["python", "TweetPinnaImageDownloader.py",
@@ -88,11 +88,11 @@ class TwitterStreamListener(tweepy.StreamListener):
             self.media_download(insert_id)
             self.counter += 1
         except errors.ServerSelectionTimeoutError:
-            log.log_add(cfg.log_email_threshold,
+            log.log_add(cfg['log_email_threshold'],
                         'MongoDB ServerSelectionTimeoutError')
             self.connect_mongodb()
         except Exception as e:
-            log.log_add(cfg.log_email_threshold,
+            log.log_add(cfg['log_email_threshold'],
                         'Could not write to MongoDB ({})'.format(e))
 
     def clear_buffer(self):
@@ -112,8 +112,8 @@ class TwitterStreamListener(tweepy.StreamListener):
             if len(self.status_buffer) > 1:
                 _thread.start_new(self.clear_buffer, ())
         else:
-            if cfg.tweet_buffer == 1 and len(self.status_buffer) \
-                < cfg.tweet_buffer_max:
+            if cfg['tweet_buffer'] == 1 and len(self.status_buffer) \
+                < cfg['tweet_buffer_max']:
                 self.status_buffer.append(status)
             _thread.start_new(self.connect_mongodb, ())
 
@@ -147,13 +147,13 @@ def start_stream(stream):
     """
     log.log_add(1, 'Stream started by start_stream')
 
-    bounding_boxes = [coordinate for box in cfg.twitter_tracking_locations for coordinate in box]
+    bounding_boxes = [coordinate for box in cfg['twitter_tracking_locations'] for coordinate in box]
     print(bounding_boxes)
 
     try:
         twitter_stream.filter(locations=bounding_boxes, is_async=True)
     except Exception as e:
-        log.log_add(cfg.log_email_threshold,
+        log.log_add(cfg['log_email_threshold'],
                     'twitter_stream Exception ({})'.format(e.message))
         end_script(stream)
 
@@ -174,9 +174,9 @@ def signal_handler(signum, frame):
     """Handlig interrupt signals."""
     stop_stream(twitter_stream)
     log.log_add(1, 'Interrupted by signal {}'.format(signum))
-    log.log_add(1, 'Ending TweetPinnaTrackLocation (Inst.: {})'.format(cfg.instance_name))
+    log.log_add(1, 'Ending TweetPinnaTrackLocation (Inst.: {})'.format(cfg['instance_name']))
     print ('[{}] Ending TweetPinnaTrackLocation (Inst.: {})'.
-           format(time.strftime("%Y-%m-%d %H:%M:%S"), cfg.instance_name))
+           format(time.strftime("%Y-%m-%d %H:%M:%S"), cfg['instance_name']))
     sys.exit(1)
 
 
@@ -186,9 +186,9 @@ def end_script(stream):
     :param stream object stream: the Tweepy stream object
     """
     stop_stream(stream)
-    log.log_add(1, 'Ending TweetPinnaTrackLocation (Inst.: {})'.format(cfg.instance_name))
+    log.log_add(1, 'Ending TweetPinnaTrackLocation (Inst.: {})'.format(cfg['instance_name']))
     print ('[{}] Ending TweetPinnaTrackLocation (Inst.: {})'.
-           format(time.strftime("%Y-%m-%d %H:%M:%S"), cfg.instance_name))
+           format(time.strftime("%Y-%m-%d %H:%M:%S"), cfg['instance_name']))
 
     os._exit(0)
     sys.exit(1)
@@ -230,23 +230,23 @@ if __name__ == '__main__':
         cfg = config.Config(open('cfg/TweetPinnaDefault.cfg'), 'r')
         log = Logger(cfg)
 
-    if len(cfg.twitter_tracking_locations) == 0:
+    if len(cfg['twitter_tracking_locations']) == 0:
         log.add(1, 'No locations to track.')
         sys.exit()
 
     # TweetPinna
     print ('[{}] Starting TweetPinnaTrackLocation (Inst.: {})'.
-           format(time.strftime("%Y-%m-%d %H:%M:%S"), cfg.instance_name))
-    log.log_add(1, 'Starting TweetPinnaTrackLocation (Inst.: {})'.format(cfg.instance_name))
+           format(time.strftime("%Y-%m-%d %H:%M:%S"), cfg['instance_name']))
+    log.log_add(1, 'Starting TweetPinnaTrackLocation (Inst.: {})'.format(cfg['instance_name']))
 
     # Initialize Tweepy
     twitter_listener = TwitterStreamListener()
     auth = tweepy.OAuthHandler(
-        cfg.twitter_consumer_key,
-        cfg.twitter_consumer_secret)
+        cfg['twitter_consumer_key'],
+        cfg['twitter_consumer_secret'])
     auth.set_access_token(
-        cfg.twitter_access_token,
-        cfg.twitter_access_token_secret)
+        cfg['twitter_access_token'],
+        cfg['twitter_access_token_secret'])
     api = tweepy.API(auth)
     twitter_stream = tweepy.Stream(auth=api.auth, listener=twitter_listener)
     start_stream(twitter_stream)
@@ -261,7 +261,7 @@ if __name__ == '__main__':
             twitter_420_429s += 1
             if twitter_420_429s > 3 and twitter_420_429_escalation == 3:
                 log.log_add(
-                    cfg.log_email_threshold,
+                    cfg['log_email_threshold'],
                     'Too many 420/429s, Disengaging')
                 end_script(twitter_stream)
             if twitter_420_429s == 3 and twitter_420_429_escalation == 2:
@@ -280,14 +280,14 @@ if __name__ == '__main__':
         # Handling 401 Error
         if log.last_twitter_error_message == 401:
             log.log_add(
-                cfg.log_email_threshold,
+                cfg['log_email_threshold'],
                 'Twitter Authentication failed')
             stop_stream(twitter_stream)
             keep_running = False
 
         # Printing current streaming status
         current_count = twitter_listener.counter
-        if (current_count % cfg.report_steps ==
+        if (current_count % cfg['report_steps'] ==
                 0 and current_count > last_tweet_milestone):
             last_tweet_milestone = current_count
             print ('[{}] {} Tweets (Location) have been saved'.

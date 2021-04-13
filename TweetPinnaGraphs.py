@@ -59,9 +59,9 @@ if not os.path.isdir('dashboard/static/img/results'):
     os.makedirs('dashboard/static/img/results')
 
 # MongoDB
-mongo_client = MongoClient(cfg.mongo_path)
-mongo_db = mongo_client[cfg.mongo_db]
-mongo_coll_tweets = mongo_db[cfg.mongo_coll]
+mongo_client = MongoClient(cfg['mongo_path'])
+mongo_db = mongo_client[cfg['mongo_db']]
+mongo_coll_tweets = mongo_db[cfg['mongo_coll']]
 
 
 def tweets_by_hour(n):
@@ -179,25 +179,25 @@ if __name__ == '__main__':
     if (os.path.isfile('dashboard/static/img/results/tweets-by-hour.png')):
         if (os.path.getmtime
             ('dashboard/static/img/results/tweets-by-hour.png') <
-                (time.time() - cfg.refresh_graphs * 60)):
-            tweets_by_hour(cfg.tweets_by_hour_number)
+                (time.time() - cfg['refresh_graphs'] * 60)):
+            tweets_by_hour(cfg['tweets_by_hour_number'])
     else:
-        tweets_by_hour(cfg.tweets_by_hour_number)
+        tweets_by_hour(cfg['tweets_by_hour_number'])
 
     # Tweets by Day
     if (os.path.isfile('dashboard/static/img/results/tweets-by-day.png')):
         if (os.path.getmtime
             ('dashboard/static/img/results/tweets-by-day.png') <
-                (time.time() - cfg.refresh_graphs * 60)):
-            tweets_by_day(cfg.tweets_by_day_number)
+                (time.time() - cfg['refresh_graphs'] * 60)):
+            tweets_by_day(cfg['tweets_by_day_number'])
     else:
-        tweets_by_day(cfg.tweets_by_day_number)
+        tweets_by_day(cfg['tweets_by_day_number'])
 
     # Tweets over Time
     if (os.path.isfile('dashboard/static/img/results/tweets-over-time.png')):
         if (os.path.getmtime
             ('dashboard/static/img/results/tweets-over-time.png') <
-                (time.time() - cfg.refresh_graphs * 60)):
-            tweets_over_time(cfg.tweets_overall_limit)
+                (time.time() - cfg['refresh_graphs'] * 60)):
+            tweets_over_time(cfg['tweets_overall_limit'])
     else:
-        tweets_over_time(cfg.tweets_overall_limit)
+        tweets_over_time(cfg['tweets_overall_limit'])

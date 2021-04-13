@@ -75,33 +75,33 @@ if __name__ == '__main__':
         log = Logger(cfg)
 
     # TweetPinna
-    log.log_add(1, 'Replies {}'.format(cfg.instance_name))
+    log.log_add(1, 'Replies {}'.format(cfg['instance_name']))
 
     # Initialize Tweepy
     try:
         auth = tweepy.OAuthHandler(
-            cfg.twitter_consumer_key,
-            cfg.twitter_consumer_secret)
+            cfg['twitter_consumer_key'],
+            cfg['twitter_consumer_secret'])
         auth.set_access_token(
-            cfg.twitter_access_token,
-            cfg.twitter_access_token_secret)
+            cfg['twitter_access_token'],
+            cfg['twitter_access_token_secret'])
         api = tweepy.API(auth)
         test = api.home_timeline()
 
     except:
         log.log_add(3, 'Replies: Cannot connect to Twitter API {}'.
-                    format(cfg.instance_name))
+                    format(cfg['instance_name']))
         sys.exit(1)
 
     # mongoDB
     try:
-        mongo_client = MongoClient(cfg.mongo_path, connectTimeoutMS=500,
+        mongo_client = MongoClient(cfg['mongo_path'], connectTimeoutMS=500,
                                    serverSelectionTimeoutMS=500)
-        mongo_db = mongo_client[cfg.mongo_db]
-        mongo_coll_tweets = mongo_db[cfg.mongo_coll]
+        mongo_db = mongo_client[cfg['mongo_db']]
+        mongo_coll_tweets = mongo_db[cfg['mongo_coll']]
     except:
         log.log_add(3, 'Replies: Cannot connect to MongoDB! {}'.
-                    format(cfg.instance_name))
+                    format(cfg['instance_name']))
         sys.exit(1)
 
     # Looping over collected tweets
