@@ -231,7 +231,7 @@ class Logger():
                     self.cfg['log_email_threshold'] - 1,
                     'Could not send email')
         else:
-            log.log_add(2, 'Email has not been sent to prevent spam')
+            self.log.log_add(2, 'Email has not been sent to prevent spam')
 
 
 def start_stream(stream):
