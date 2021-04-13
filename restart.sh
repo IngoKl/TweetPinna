@@ -1,6 +1,6 @@
 #!/bin/bash
 old=$(< lastcount.txt)
-new_count=$(curl 127.0.0.1:8080/ajax/get/docs-in-collection 2>&1| awk '/[0-9]{7,10}/' | sed 's/ //g')
+new_count=$(curl --user admin:tweetpinna http://127.0.0.1:8080/ajax/get/docs-in-collection 2>&1 | grep -oP ',([0-9]{1,})' | cut -d, -f2)
 
 if [ "$old" == "" ] && [ "$new_count" == "" ]
  then
@@ -21,6 +21,7 @@ if ((delta < 100))
 fi
 
 # Restart MongoDB; Requires sudo rights: tweetpinna ALL=NOPASSWD:/usr/sbin/service mongodb *
+# This, obviously, only works if MongoDB is running on the same host
 service=mongodb
 
 if sudo service mongodb status | grep -q 'failed'
