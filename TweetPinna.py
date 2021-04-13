@@ -375,8 +375,7 @@ if __name__ == '__main__':
 
         # Printing current streaming status
         current_count = twitter_listener.counter
-        if (current_count % cfg['report_steps'] ==
-                0 and current_count > last_tweet_milestone):
+        if (current_count % cfg['report_steps'] == 0 and current_count > last_tweet_milestone):
             last_tweet_milestone = current_count
             print ('[{}] {} Tweets have been saved'.
                    format(time.strftime("%Y-%m-%d %H:%M:%S"), current_count))
