@@ -28,7 +28,7 @@ from pymongo import MongoClient
 from TweetPinna import check_config
 from TweetPinna import Logger
 from TweetPinnaImageDownloader import download_media_file
-from werkzeug.contrib.cache import SimpleCache
+from cachelib import SimpleCache
 import config
 import os
 import sys

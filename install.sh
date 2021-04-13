@@ -8,7 +8,7 @@ case $yn in
     [Yy]* ) 
 		pip install -r requirements.txt
 
-		# The Tweepy API changed after 3.10.0
+		# The Tweepy API changed in current versions
 		#pip install git+git://github.com/tweepy/tweepy/@master
 		;;
     [Nn]* ) ;;

@@ -20,6 +20,7 @@ from pymongo import errors
 from pymongo import MongoClient
 from time import sleep
 from TweetPinna import Logger
+from TweetPinna import check_config
 import config
 import datetime
 import os
@@ -192,22 +193,6 @@ def end_script(stream):
 
     os._exit(0)
     sys.exit(1)
-
-
-def check_config(config_file_path):
-    """Checking a configuration file. Returns True if all entries are there.
-
-    :param str config_file_path: path to the file that should be tested
-    """
-    reference_cfg = config.Config(open('cfg/TweetPinnaDefault.cfg'), 'r')
-    test_cfg = config.Config(open(config_file_path), 'r')
-
-    for cfg_entry in reference_cfg:
-        if cfg_entry not in test_cfg:
-            print ('Option {} is missing in the configuration'.
-                   format(cfg_entry))
-            return False
-    return True
 
 
 if __name__ == '__main__':

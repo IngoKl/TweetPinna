@@ -6,8 +6,10 @@ numpy>=1.18.1
 pymongo>=3.10.1
 pur>=5.3.0
 Flask-BasicAuth>=0.2.0
-tweepy==3.10.0
+tweepy=>3.10.0
+cachelib=>0.1.1
 
 # Alternatively, use Tweepy from GitHub
-# Note: Tweepy's API changed after 3.10.0
-#git+git://github.com/tweepy/tweepy
+# Note: Tweepy's API changed in current versions;
+# 3.9.0 is the last tag to currently work
+#git+git://github.com/tweepy/tweepy.git@v3.9.0
