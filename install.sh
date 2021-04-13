@@ -1,4 +1,8 @@
 #!/bin/bash
+
+cp start.sh start_tp.sh
+cp restart.sh restart.tp.sh
+
 read -p "Do you want to download all Python dependencies? [yes/no]: " yn
 case $yn in
     [Yy]* ) 
@@ -51,7 +55,7 @@ read -p "Do you want to install a default cronjob for automated restart? [yes/no
 case $yn in
     [Yy]* ) 
 		crontab -l > current_crons
-		echo "*/30 * * * * bash -c \"cd $PWD && bash restart.sh\"" >> current_crons
+		echo "*/30 * * * * bash -c \"cd $PWD && bash restart_tp.sh\"" >> current_crons
 		crontab current_crons
 		rm current_crons
 		;;
