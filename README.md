@@ -2,11 +2,11 @@
 
 ![Logo](https://cloud.githubusercontent.com/assets/16179317/22861826/93aa52be-f122-11e6-891d-5ce9b452ef01.png?raw=true)
 
-TweetPinna is a tweet archiver that saves tweets and metadata to MongoDB. It is designed for long-running archival projects (e.g. for academic use) and is based on [Tweepy](http://www.tweepy.org/). 
-As of now, TweetPinna is able to archive tweets based on search terms and/or hashtags as well as based on location. There is rudimentary support for archiving specific user's timelines.
+Given recent changes at Twitter, the release of *Twitter API v2*, and the fact that *TweetPinna* hasn't been actively maintained for a while, I no longer recommend to use it.
 
-> TweetPinna, as of 1.0.9, supports Python 3. However, the original TweetPinna, development started in early 2014, was in written in (legacy) Python (2.7x). I'm in the process of hopefully refactoring (and actually moving away from legacy Python) the whole codebase.
-> The project, as it stands right now, works fine, but is fairly messy. There will be (very infrequent) marginal updates to this legacy version.
+TweetPinna is a tweet archiver that saves tweets and metadata to MongoDB. It is designed for long-running archival projects (e.g. for academic use) and is based on [Tweepy](http://www.tweepy.org/). As of now, TweetPinna is able to archive tweets based on search terms and/or hashtags as well as based on location. There is rudimentary support for archiving specific user's timelines.
+
+> TweetPinna, as of 1.0.9, supports Python 3. However, the original TweetPinna, development started in early 2014, was in written in (legacy) Python (2.7x). I'm in the process of hopefully refactoring (and actually moving away from legacy Python) the whole codebase. The project, as it stands right now, works fine, but is fairly messy. There will be (very infrequent) marginal updates to this legacy version.
 
 ## Features
 
@@ -62,33 +62,6 @@ Also, keep in mind that this method is far from perfect and especially does not 
 ### restart.sh
 
 If persistent logging/tracking is paramount, `restart.sh` can be called from time to time (cronjob) in order to restart both TweetPinna and the MongoDB service in case they are down for some reason. While this is certainly not the 'cleanest' solution, it works well in practice.
-
-## Todo and Bugtracker
-
-- [ ] Update TweetPinna to new Tweepy API (Priority)
-- [ ] Add calling module/file to the log
-- [ ] AWS S3 compatibility for images
-- [ ] Fetching a list of friends/relationships and retrieve their tweets (with a given level of depth)
-- [ ] Fix xlabels in the dashboard
-- [ ] get_hashtags() cosumes to much memory and cpu
-- [ ] Implement i18n
-- [ ] Implement OSoMe's Botometer (see [botometer-python](https://github.com/IUNetSci/botometer-python))
-- [ ] MongoDB auth compatibility
-- [ ] Provide better installation/running routines
-- [ ] Replace print/own logger with logging
-- [ ] Restructuring the project / "make it more pythonic"
-- [ ] Sphinx Documentation
-- [ ] Testing / add Test
-- [ ] Too many hits on tweepy result in an `IncompleteRead exception`
-- [ ] Unify the individual modules and/or write a wrapper to access them all
-- [ ] Video downloader
-- [ ] Separate config and tweepy initialization into a helper function --> modularization
-- [ ] Implement instant download functionality within the timeline module
-- [ ] Dashboard should not start without MongoDB connection -> implement global db checks
-- [ ] Before adding a tweet to the DB we should check whether it already exists
-- [ ] The "Tweets over Time" graph(s) doesn't show the actual number of tweets due to scaling effects
-- [ ] Switch over to f-Strings
-- [ ] Add full support for 'extended_tweet' objects
 
 ## Special Behaviour
 
